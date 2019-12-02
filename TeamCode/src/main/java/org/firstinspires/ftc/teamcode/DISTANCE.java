@@ -39,23 +39,20 @@ public class DISTANCE extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-
-            if (sensorRange.getDistance(DistanceUnit.INCH) > 10){
+            double test = 2.5;
+            double offest = 1.375;
+            while (sensorRange.getDistance(DistanceUnit.INCH) > ((test)*0.83 + offest)) {
                 driveBackLeft.setPower(0.15);
-            driveBackRight.setPower(0.15);
-            driveFrontLeft.setPower(0.15);
-            driveFrontRight.setPower(0.15);
-            sleep(500);
-                driveBackLeft.setPower(0);
-                driveBackRight.setPower(0);
-                driveFrontLeft.setPower(0);
-                driveFrontRight.setPower(0);
-            }else{
+                driveBackRight.setPower(0.15);
+                driveFrontLeft.setPower(0.15);
+                driveFrontRight.setPower(0.15);
+                sleep(250);
+            }
             driveBackLeft.setPower(0);
             driveBackRight.setPower(0);
             driveFrontLeft.setPower(0);
             driveFrontRight.setPower(0);
-            }
+
             // generic DistanceSensor methods.
             telemetry.addData("deviceName", sensorRange.getDeviceName());
             telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));

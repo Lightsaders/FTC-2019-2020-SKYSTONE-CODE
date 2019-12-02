@@ -30,6 +30,7 @@ public class colors extends LinearOpMode {
 
     /** The colorSensor field will contain a reference to our color sensor hardware object */
     NormalizedColorSensor colorSensor;
+    NormalizedColorSensor colorSensor0;
     /** The relativeLayout field is used to aid in providing interesting visual feedback
      * in this sample application; you probably *don't* need something analogous when you
      * use a color sensor on your robot */
@@ -47,26 +48,16 @@ public class colors extends LinearOpMode {
      */
     @Override public void runOpMode() throws InterruptedException {
 
-        // Get a reference to the RelativeLayout so we can later change the background
-        // color of the Robot Controller app to match the hue detected by the RGB sensor.
-        int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
-        relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
-
-        // values is a reference to the hsvValues array.
-        float[] hsvValues = new float[3];
-        final float values[] = hsvValues;
-
-        // bPrevState and bCurrState keep track of the previous and current state of the button
-        boolean bPrevState = false;
-        boolean bCurrState = false;
-
-        // Get a reference to our sensor object.
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
+        colorSensor0 = hardwareMap.get(NormalizedColorSensor.class, "colorb");
 
         // If possible, turn the light on in the beginning (it might already be on anyway,
         // we just make sure it is if we can).
         if (colorSensor instanceof SwitchableLight) {
             ((SwitchableLight) colorSensor).enableLight(true);
+        }
+        if (colorSensor0 instanceof SwitchableLight) {
+            ((SwitchableLight) colorSensor0).enableLight(true);
         }
 
         // Wait for the start button to be pressed.
@@ -78,7 +69,7 @@ public class colors extends LinearOpMode {
 
             // Read the sensor
             NormalizedRGBA colors = colorSensor.getNormalizedColors();
-
+            NormalizedRGBA colors0 = colorSensor0.getNormalizedColors();
             /** Use telemetry to display feedback on the driver station. We show the conversion
              * of the colors to hue, saturation and value, and display the the normalized values
              * as returned from the sensor.
@@ -86,6 +77,7 @@ public class colors extends LinearOpMode {
 
 
             int color = colors.toColor();
+            int color0 = colors0.toColor();
 
             // Balance the colors. The values returned by getColors() are normalized relative to the
             // maximum possible values that the sensor can measure. For example, a sensor might in a
@@ -102,6 +94,11 @@ public class colors extends LinearOpMode {
             colors.green /= max;
             colors.blue /= max;
             color = colors.toColor();
+            float max0 = Math.max(Math.max(Math.max(colors0.red, colors0.green), colors0.blue), colors0.alpha);
+            colors0.red /= max0;
+            colors0.green /= max0;
+            colors0.blue /= max0;
+            color0 = colors0.toColor();
 
 
             telemetry.addLine("normalized color:  ")
@@ -109,14 +106,54 @@ public class colors extends LinearOpMode {
                     .addData("r",  Color.red(color))
                     .addData("g",  Color.green(color))
                     .addData("b",  Color.blue(color));
+  
+            telemetry.addLine("normalized color0:  ")
+                    .addData("a",  Color.alpha(color0))
+                    .addData("r",  Color.red(color0))
+                    .addData("g",  Color.green(color0))
+                    .addData("b",  Color.blue(color0));
             telemetry.update();
+            if (Color.alpha(color) < 30 && opModeIsActive() && !isStopRequested()) {
+               telemetry.addLine("SKYSTONEMIDDLE");
 
-            // convert the RGB values to HSV values.
-            Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsvValues);
+                colors = colorSensor.getNormalizedColors();
+                color  = colors.toColor();
+                max = Math.max(Math.max(Math.max(colors.red, colors.green), colors.blue), colors.alpha);
+                colors.red /= max;
+                colors.green /= max;
+                colors.blue /= max;
+                color = colors.toColor();
 
-            // change the background color to match the color detected by the RGB sensor.
-            // pass a reference to the hue, saturation, and value array as an argument
-            // to the HSVToColor method.
+                telemetry.addLine("IN LOOP")
+                        .addData("a",  Color.alpha(color))
+                        .addData("r",  Color.red(color))
+                        .addData("g",  Color.green(color))
+                        .addData("b",  Color.blue(color));
+                telemetry.update();
+            } else if (Color.red(color0) < 180 && opModeIsActive() && !isStopRequested()){
+                telemetry.addLine(" SKYSTONE WALL");
+
+                colors0 = colorSensor0.getNormalizedColors();
+                color0  = colors0.toColor();
+                max0 = Math.max(Math.max(Math.max(colors0.red, colors0.green), colors0.blue), colors0.alpha);
+                colors0.red /= max0;
+                colors0.green /= max0;
+                colors0.blue /= max0;
+                color0 = colors.toColor();
+
+                telemetry.addLine("IN LOOPb")
+                        .addData("a",  Color.alpha(color0))
+                        .addData("r",  Color.red(color0))
+                        .addData("g",  Color.green(color0))
+                        .addData("b",  Color.blue(color0));
+                telemetry.update();
+            }else{
+                telemetry.addLine(" SKYSTONE FAR");
+            }
+
+
+
+
         }
 
     }

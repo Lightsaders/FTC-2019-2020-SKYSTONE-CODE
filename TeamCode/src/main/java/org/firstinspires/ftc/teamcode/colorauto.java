@@ -60,8 +60,8 @@ public class colorauto extends LinearOpMode {
         driveFrontRight = hardwareMap.dcMotor.get("driveFrontRight");
         driveBackLeft = hardwareMap.dcMotor.get("driveBackLeft");
         driveBackRight = hardwareMap.dcMotor.get("driveBackRight");
-        driveFrontRight.setDirection(DcMotor.Direction.REVERSE);
-        driveBackRight.setDirection(DcMotor.Direction.REVERSE);
+        driveFrontLeft.setDirection(DcMotor.Direction.REVERSE);
+        driveBackLeft.setDirection(DcMotor.Direction.REVERSE);
         // values is a reference to the hsvValues array.
         float[] hsvValues = new float[3];
         final float values[] = hsvValues;
@@ -114,25 +114,37 @@ public class colorauto extends LinearOpMode {
             color = colors.toColor();
 
 
-            telemetry.addLine("normalized color:  ")
+            telemetry.addLine("BEFORE LOOP")
                     .addData("a",  Color.alpha(color))
                     .addData("r",  Color.red(color))
                     .addData("g",  Color.green(color))
                     .addData("b",  Color.blue(color));
             telemetry.update();
-            if (Color.red(color) < 100){
-                sleep(1000);
-                driveBackLeft.setPower(-0.1);
-                driveBackRight.setPower(-0.1);
-                driveFrontLeft.setPower(-0.1);
-                driveFrontRight.setPower(-0.1);
-                sleep(1000);
-            }else{
+            while (Color.red(color) < 200 && opModeIsActive() && !isStopRequested()) {
+                driveBackLeft.setPower(0.4);
+                driveBackRight.setPower(0.4);
+                driveFrontLeft.setPower(0.4);
+                driveFrontRight.setPower(0.4);
+
+                colors = colorSensor.getNormalizedColors();
+                color  = colors.toColor();
+                max = Math.max(Math.max(Math.max(colors.red, colors.green), colors.blue), colors.alpha);
+                colors.red /= max;
+                colors.green /= max;
+                colors.blue /= max;
+                color = colors.toColor();
+
+                telemetry.addLine("IN LOOP")
+                        .addData("a",  Color.alpha(color))
+                        .addData("r",  Color.red(color))
+                        .addData("g",  Color.green(color))
+                        .addData("b",  Color.blue(color));
+                telemetry.update();
+            }
                 driveBackLeft.setPower(0);
                 driveBackRight.setPower(0);
                 driveFrontLeft.setPower(0);
                 driveFrontRight.setPower(0);
-            }
 
             // convert the RGB values to HSV values.
             Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsvValues);
@@ -140,6 +152,13 @@ public class colorauto extends LinearOpMode {
             // change the background color to match the color detected by the RGB sensor.
             // pass a reference to the hue, saturation, and value array as an argument
             // to the HSVToColor method.
+            telemetry.addLine("AFTER LOOP")
+                    .addData("a",  Color.alpha(color))
+                    .addData("r",  Color.red(color))
+                    .addData("g",  Color.green(color))
+                    .addData("b",  Color.blue(color));
+            telemetry.update();
+            sleep(40000000);
         }
 
     }
