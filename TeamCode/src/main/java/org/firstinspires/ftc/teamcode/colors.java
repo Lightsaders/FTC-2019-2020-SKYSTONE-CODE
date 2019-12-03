@@ -113,43 +113,43 @@ public class colors extends LinearOpMode {
                     .addData("g",  Color.green(color0))
                     .addData("b",  Color.blue(color0));
             telemetry.update();
-            if (Color.alpha(color) < 30 && opModeIsActive() && !isStopRequested()) {
-               telemetry.addLine("SKYSTONEMIDDLE");
-
-                colors = colorSensor.getNormalizedColors();
-                color  = colors.toColor();
-                max = Math.max(Math.max(Math.max(colors.red, colors.green), colors.blue), colors.alpha);
-                colors.red /= max;
-                colors.green /= max;
-                colors.blue /= max;
-                color = colors.toColor();
-
-                telemetry.addLine("IN LOOP")
-                        .addData("a",  Color.alpha(color))
-                        .addData("r",  Color.red(color))
-                        .addData("g",  Color.green(color))
-                        .addData("b",  Color.blue(color));
-                telemetry.update();
-            } else if (Color.red(color0) < 180 && opModeIsActive() && !isStopRequested()){
-                telemetry.addLine(" SKYSTONE WALL");
-
-                colors0 = colorSensor0.getNormalizedColors();
-                color0  = colors0.toColor();
-                max0 = Math.max(Math.max(Math.max(colors0.red, colors0.green), colors0.blue), colors0.alpha);
-                colors0.red /= max0;
-                colors0.green /= max0;
-                colors0.blue /= max0;
-                color0 = colors.toColor();
-
-                telemetry.addLine("IN LOOPb")
-                        .addData("a",  Color.alpha(color0))
-                        .addData("r",  Color.red(color0))
-                        .addData("g",  Color.green(color0))
-                        .addData("b",  Color.blue(color0));
-                telemetry.update();
-            }else{
-                telemetry.addLine(" SKYSTONE FAR");
-            }
+//            if (Color.alpha(color) < 30 && opModeIsActive() && !isStopRequested()) {
+//               telemetry.addLine("SKYSTONEMIDDLE");
+//
+//                colors = colorSensor.getNormalizedColors();
+//                color  = colors.toColor();
+//                max = Math.max(Math.max(Math.max(colors.red, colors.green), colors.blue), colors.alpha);
+//                colors.red /= max;
+//                colors.green /= max;
+//                colors.blue /= max;
+//                color = colors.toColor();
+//
+//                telemetry.addLine("IN LOOP")
+//                        .addData("a",  Color.alpha(color))
+//                        .addData("r",  Color.red(color))
+//                        .addData("g",  Color.green(color))
+//                        .addData("b",  Color.blue(color));
+//                telemetry.update();
+//            } else if (Color.red(color0) < 180 && opModeIsActive() && !isStopRequested()){
+//                telemetry.addLine(" SKYSTONE WALL");
+//
+//                colors0 = colorSensor0.getNormalizedColors();
+//                color0  = colors0.toColor();
+//                max0 = Math.max(Math.max(Math.max(colors0.red, colors0.green), colors0.blue), colors0.alpha);
+//                colors0.red /= max0;
+//                colors0.green /= max0;
+//                colors0.blue /= max0;
+//                color0 = colors.toColor();
+//
+//                telemetry.addLine("IN LOOPb")
+//                        .addData("a",  Color.alpha(color0))
+//                        .addData("r",  Color.red(color0))
+//                        .addData("g",  Color.green(color0))
+//                        .addData("b",  Color.blue(color0));
+//                telemetry.update();
+//            }else{
+//                telemetry.addLine(" SKYSTONE FAR");
+//            }
 
 
 
