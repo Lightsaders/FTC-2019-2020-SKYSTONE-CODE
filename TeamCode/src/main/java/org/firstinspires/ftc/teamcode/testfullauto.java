@@ -132,194 +132,193 @@ public class testfullauto extends LinearOpMode {
 
             straightDriveEncoder(.6, -23);
             sleep(1000);
-            strafeDriveEncoder(.6, 34, "LEFT");
-            sleep(1000);
-            telemetry.addData("deviceName", sensorRange.getDeviceName());
-            telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));
-            telemetry.addData("range", String.format("%.01f cm", sensorRange.getDistance(DistanceUnit.CM)));
-            telemetry.addData("range", String.format("%.01f m", sensorRange.getDistance(DistanceUnit.METER)));
-            telemetry.addData("range", String.format("%.01f in", sensorRange.getDistance(DistanceUnit.INCH)));
 
-            // Rev2mDistanceSensor specific methods.
-            telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
-            telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
-
-            telemetry.update();
-
-
-            int color = colors.toColor();
-            int color0 = colors0.toColor();
-
-            // Balance the colors. The values returned by getColors() are normalized relative to the
-            // maximum possible values that the sensor can measure. For example, a sensor might in a
-            // particular configuration be able to internally measure color intensity in a range of
-            // [0, 10240]. In such a case, the values returned by getColors() will be divided by 10240
-            // so as to return a value it the range [0,1]. However, and this is the point, even so, the
-            // values we see here may not get close to 1.0 in, e.g., low light conditions where the
-            // sensor measurements don't approach their maximum limit. In such situations, the *relative*
-            // intensities of the colors are likely what is most interesting. Here, for example, we boost
-            // the signal on the colors while maintaining their relative balance so as to give more
-            // vibrant visual feedback on the robot controller visual display.
-            float max = Math.max(Math.max(Math.max(colors.red, colors.green), colors.blue), colors.alpha);
-            colors.red /= max;
-            colors.green /= max;
-            colors.blue /= max;
-            color = colors.toColor();
-            float max0 = Math.max(Math.max(Math.max(colors0.red, colors0.green), colors0.blue), colors0.alpha);
-            colors0.red /= max0;
-            colors0.green /= max0;
-            colors0.blue /= max0;
-            color0 = colors0.toColor();
-
-
-            telemetry.addLine("normalized color:  ")
-                    .addData("a", Color.alpha(color))
-                    .addData("r", Color.red(color))
-                    .addData("g", Color.green(color))
-                    .addData("b", Color.blue(color));
-
-            telemetry.addLine("normalized color0:  ")
-                    .addData("a", Color.alpha(color0))
-                    .addData("r", Color.red(color0))
-                    .addData("g", Color.green(color0))
-                    .addData("b", Color.blue(color0));
-            telemetry.update();
-            sleep(2000);
-            while (!isStopRequested() && opModeIsActive()  ) {
-                if (Color.red(color) < 100 && opModeIsActive() && !isStopRequested()) {
-                    telemetry.addLine("SKYSTONEWall");
-                    positionSkystone = "LEFT";
-                    colors = colorSensor.getNormalizedColors();
-                    color = colors.toColor();
-                    max = Math.max(Math.max(Math.max(colors.red, colors.green), colors.blue), colors.alpha);
-                    colors.red /= max;
-                    colors.green /= max;
-                    colors.blue /= max;
-                    color = colors.toColor();
-
-                    telemetry.addLine("IN LOOP")
-                            .addData("a", Color.alpha(color))
-                            .addData("r", Color.red(color))
-                            .addData("g", Color.green(color))
-                            .addData("b", Color.blue(color));
-                    telemetry.update();
-                    sleep(1000);
-                    if (!isStopRequested() && opModeIsActive()) {
-//                            strafeDriveEncoder(1, 53, "LEFT");
-                        telemetry.addLine(" SKYSTONE WALL");
-                        sleep(1000);
-
-                       turnEncoder(.6,90,"CC");
-                       sleep(1000);
-                        clamp.setPosition(.68);
-                        liftleft.setPower(1);
-                        liftright.setPower(1);
-                        sleep(1000);
-                        liftleft.setPower(0);
-                        liftright.setPower(0);
-                        straightDriveEncoder(.6,34);
-                        strafeDriveEncoder(.6,250,"LEFT");
-                        clamp.setPosition(1);
-                        strafeDriveEncoder(.6,67,"RIGHT");
-//                            sleep(1500);
-//                            straightDriveEncoder(.6, 153);
-//                            sleep(1000);
+//            telemetry.addData("deviceName", sensorRange.getDeviceName());
+//            telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));
+//            telemetry.addData("range", String.format("%.01f cm", sensorRange.getDistance(DistanceUnit.CM)));
+//            telemetry.addData("range", String.format("%.01f m", sensorRange.getDistance(DistanceUnit.METER)));
+//            telemetry.addData("range", String.format("%.01f in", sensorRange.getDistance(DistanceUnit.INCH)));
 //
-//                            sleep(2000);
-//                            straightDriveEncoder(.6, -78);
-//                            strafeDriveEncoder(.6, 303, "LEFT");
+//            // Rev2mDistanceSensor specific methods.
+//            telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
+//            telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
 //
-//                            sleep(1500);
-//                            straightDriveEncoder(1, 40);
-//                            straightDriveEncoder(1, -40);
-//                            strafeDriveEncoder(1, 79, "RIGHT");
-//                            straightDriveEncoder(1, 35);
+//            telemetry.update();
 //
 //
+//            int color = colors.toColor();
+//            int color0 = colors0.toColor();
 //
-
-                        break;
-                    }
-
-
-                } else if (Color.red(color0) < 140 && opModeIsActive() && !isStopRequested()) {
-                    telemetry.addLine(" SKYSTONE MIDDLE");
-                    positionSkystone = "CENTER";
-                    colors0 = colorSensor0.getNormalizedColors();
-                    color0 = colors0.toColor();
-                    max0 = Math.max(Math.max(Math.max(colors0.red, colors0.green), colors0.blue), colors0.alpha);
-                    colors0.red /= max0;
-                    colors0.green /= max0;
-                    colors0.blue /= max0;
-                    color0 = colors.toColor();
-
-                    telemetry.addLine("MIDDLE")
-                            .addData("a", Color.alpha(color0))
-                            .addData("r", Color.red(color0))
-                            .addData("g", Color.green(color0))
-                            .addData("b", Color.blue(color0));
-                    telemetry.update();
-                    sleep(1000);
-                    if (!isStopRequested() && opModeIsActive()) {
-//                            strafeDriveEncoder(1, 14, "LEFT");
-                        telemetry.addLine(" SKYSTONE MIDDLE");
-                        sleep(1000);
-                        straightDriveEncoder(.5, 10);
-                        servo.setPosition(1);
-//                            sleep(1000);
-//                            straightDriveEncoder(.7, 153);
-//                            sleep(1000);
-//
-//                            sleep(2000);
-//                            straightDriveEncoder(.6, -78);
-//                            strafeDriveEncoder(.6, 343, "LEFT");
-//
-//                            sleep(1500);
-//                            straightDriveEncoder(1, 40);
-//                            straightDriveEncoder(1, -40);
-//                            strafeDriveEncoder(1, 69, "RIGHT");
-//                            straightDriveEncoder(1, 25);
+//            // Balance the colors. The values returned by getColors() are normalized relative to the
+//            // maximum possible values that the sensor can measure. For example, a sensor might in a
+//            // particular configuration be able to internally measure color intensity in a range of
+//            // [0, 10240]. In such a case, the values returned by getColors() will be divided by 10240
+//            // so as to return a value it the range [0,1]. However, and this is the point, even so, the
+//            // values we see here may not get close to 1.0 in, e.g., low light conditions where the
+//            // sensor measurements don't approach their maximum limit. In such situations, the *relative*
+//            // intensities of the colors are likely what is most interesting. Here, for example, we boost
+//            // the signal on the colors while maintaining their relative balance so as to give more
+//            // vibrant visual feedback on the robot controller visual display.
+//            float max = Math.max(Math.max(Math.max(colors.red, colors.green), colors.blue), colors.alpha);
+//            colors.red /= max;
+//            colors.green /= max;
+//            colors.blue /= max;
+//            color = colors.toColor();
+//            float max0 = Math.max(Math.max(Math.max(colors0.red, colors0.green), colors0.blue), colors0.alpha);
+//            colors0.red /= max0;
+//            colors0.green /= max0;
+//            colors0.blue /= max0;
+//            color0 = colors0.toColor();
 //
 //
+//            telemetry.addLine("normalized color:  ")
+//                    .addData("a", Color.alpha(color))
+//                    .addData("r", Color.red(color))
+//                    .addData("g", Color.green(color))
+//                    .addData("b", Color.blue(color));
+//
+//            telemetry.addLine("normalized color0:  ")
+//                    .addData("a", Color.alpha(color0))
+//                    .addData("r", Color.red(color0))
+//                    .addData("g", Color.green(color0))
+//                    .addData("b", Color.blue(color0));
+//            telemetry.update();
+//            sleep(2000);
+//            while (!isStopRequested() && opModeIsActive()  ) {
+//                if (Color.red(color) < 100 && opModeIsActive() && !isStopRequested()) {
+//                    telemetry.addLine("SKYSTONEWall");
+//                    positionSkystone = "LEFT";
+//                    colors = colorSensor.getNormalizedColors();
+//                    color = colors.toColor();
+//                    max = Math.max(Math.max(Math.max(colors.red, colors.green), colors.blue), colors.alpha);
+//                    colors.red /= max;
+//                    colors.green /= max;
+//                    colors.blue /= max;
+//                    color = colors.toColor();
+//
+//                    telemetry.addLine("IN LOOP")
+//                            .addData("a", Color.alpha(color))
+//                            .addData("r", Color.red(color))
+//                            .addData("g", Color.green(color))
+//                            .addData("b", Color.blue(color));
+//                    telemetry.update();
+//                    sleep(1000);
+//                    if (!isStopRequested() && opModeIsActive()) {
+////                            strafeDriveEncoder(1, 53, "LEFT");
+//                        telemetry.addLine(" SKYSTONE WALL");
+//                        sleep(1000);
+//
+//                       turnEncoder(.6,90,"CC");
+//                       sleep(1000);
+//                        clamp.setPosition(.68);
+//                        liftleft.setPower(1);
+//                        liftright.setPower(1);
+//                        sleep(1000);
+//                        liftleft.setPower(0);
+//                        liftright.setPower(0);
+//                        straightDriveEncoder(.6,34);
+//                        strafeDriveEncoder(.6,250,"LEFT");
+//                        clamp.setPosition(1);
+//                        strafeDriveEncoder(.6,67,"RIGHT");
+////                            sleep(1500);
+////                            straightDriveEncoder(.6, 153);
+////                            sleep(1000);
+////
+////                            sleep(2000);
+////                            straightDriveEncoder(.6, -78);
+////                            strafeDriveEncoder(.6, 303, "LEFT");
+////
+////                            sleep(1500);
+////                            straightDriveEncoder(1, 40);
+////                            straightDriveEncoder(1, -40);
+////                            strafeDriveEncoder(1, 79, "RIGHT");
+////                            straightDriveEncoder(1, 35);
+////
+////
+////
+//
+//                        break;
+//                    }
 //
 //
-
-                        break;
-                    }
-
-                } else {
-                    telemetry.addLine(" SKYSTONE FAR");
-                    positionSkystone = "RIGHT";
-                    if (!isStopRequested() && opModeIsActive()) {
-                        telemetry.addLine(" SKYSTONE FAR");
-                        sleep(1000);
-                        straightDriveEncoder(.5, 18);
-                        servo.setPosition(.9);
-                        strafeDriveEncoder(.6, 15, "RIGHT");
-
+//                } else if (Color.red(color0) < 140 && opModeIsActive() && !isStopRequested()) {
+//                    telemetry.addLine(" SKYSTONE MIDDLE");
+//                    positionSkystone = "CENTER";
+//                    colors0 = colorSensor0.getNormalizedColors();
+//                    color0 = colors0.toColor();
+//                    max0 = Math.max(Math.max(Math.max(colors0.red, colors0.green), colors0.blue), colors0.alpha);
+//                    colors0.red /= max0;
+//                    colors0.green /= max0;
+//                    colors0.blue /= max0;
+//                    color0 = colors.toColor();
 //
-                        sleep(1500);
-                        straightDriveEncoder(.6, 150);
+//                    telemetry.addLine("MIDDLE")
+//                            .addData("a", Color.alpha(color0))
+//                            .addData("r", Color.red(color0))
+//                            .addData("g", Color.green(color0))
+//                            .addData("b", Color.blue(color0));
+//                    telemetry.update();
+//                    sleep(1000);
+//                    if (!isStopRequested() && opModeIsActive()) {
+////                            strafeDriveEncoder(1, 14, "LEFT");
+//                        telemetry.addLine(" SKYSTONE MIDDLE");
+//                        sleep(1000);
+//                        straightDriveEncoder(.5, 10);
+//                        servo.setPosition(1);
+////                            sleep(1000);
+////                            straightDriveEncoder(.7, 153);
+////                            sleep(1000);
+////
+////                            sleep(2000);
+////                            straightDriveEncoder(.6, -78);
+////                            strafeDriveEncoder(.6, 343, "LEFT");
+////
+////                            sleep(1500);
+////                            straightDriveEncoder(1, 40);
+////                            straightDriveEncoder(1, -40);
+////                            strafeDriveEncoder(1, 69, "RIGHT");
+////                            straightDriveEncoder(1, 25);
+////
+////
+////
+////
 //
-//                            sleep(1400);
-//                            straightDriveEncoder(1, -147);
-//                            strafeDriveEncoder(1, 249, "LEFT");
-//                            straightDriveEncoder(1, 40);
+//                        break;
+//                    }
 //
-//                            sleep(1500);
-//                            straightDriveEncoder(1, -40);
-//                            strafeDriveEncoder(1, 59, "RIGHT");
-//                            straightDriveEncoder(1, 25);
+//                } else {
+//                    telemetry.addLine(" SKYSTONE FAR");
+//                    positionSkystone = "RIGHT";
+//                    if (!isStopRequested() && opModeIsActive()) {
+//                        telemetry.addLine(" SKYSTONE FAR");
+//                        sleep(1000);
+//                        straightDriveEncoder(.5, 18);
+//                        servo.setPosition(.9);
+//                        strafeDriveEncoder(.6, 15, "RIGHT");
 //
-
-                        break;
-
-                    }
-
-                }
-
-                idle();
-                }
+////
+//                        sleep(1500);
+//                        straightDriveEncoder(.6, 150);
+////
+////                            sleep(1400);
+////                            straightDriveEncoder(1, -147);
+////                            strafeDriveEncoder(1, 249, "LEFT");
+////                            straightDriveEncoder(1, 40);
+////
+////                            sleep(1500);
+////                            straightDriveEncoder(1, -40);
+////                            strafeDriveEncoder(1, 59, "RIGHT");
+////                            straightDriveEncoder(1, 25);
+////
+//
+//                        break;
+//
+//                    }
+//
+//                }
+//
+//                idle();
+//                }
             idle();
             }
             }
