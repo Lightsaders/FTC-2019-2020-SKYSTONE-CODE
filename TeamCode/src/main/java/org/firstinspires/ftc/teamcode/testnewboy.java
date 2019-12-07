@@ -82,21 +82,37 @@ public class testnewboy extends LinearOpMode {
 //                driveBackRight.setPower(gamepad1.right_stick_x*.24);
             }
             while(gamepad1.right_bumper){
-                driveFrontLeft.setPower(-1);
-                driveBackLeft.setPower(1);
-                driveFrontRight.setPower(1);
-                driveBackRight.setPower(-1);
+                driveBackLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
+                driveFrontLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x*-1);
+                driveFrontRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
+                driveBackRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x*-1);
+                // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
+                driveFrontLeft.setPower(gamepad1.right_stick_x * -1);
+                driveBackLeft.setPower(gamepad1.right_stick_x * -1);
+                driveFrontRight.setPower(gamepad1.right_stick_x);
+                driveBackRight.setPower(gamepad1.right_stick_x);
             }
             while(gamepad1.left_bumper){
-                driveFrontLeft.setPower(1);
-                driveBackLeft.setPower(-1);
-                driveFrontRight.setPower(-1);
-                driveBackRight.setPower(1);
+                driveBackLeft.setPower(gamepad1.left_stick_y *.3 + gamepad1.left_stick_x*.3);
+                driveFrontLeft.setPower(gamepad1.left_stick_y*.3+ gamepad1.left_stick_x*-.3);
+                driveFrontRight.setPower(gamepad1.left_stick_y*.3 + gamepad1.left_stick_x*.3);
+                driveBackRight.setPower(gamepad1.left_stick_y*.3 + gamepad1.left_stick_x*-.3);
+                // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
+                driveFrontLeft.setPower(gamepad1.right_stick_x * -.3);
+                driveBackLeft.setPower(gamepad1.right_stick_x * -.3);
+                driveFrontRight.setPower(gamepad1.right_stick_x*.3);
+                driveBackRight.setPower(gamepad1.right_stick_x*.3);
             }
-            driveFrontLeft.setPower(gamepad1.left_stick_y * .8);
-            driveBackLeft.setPower(gamepad1.left_stick_y * .8);
-            driveFrontRight.setPower(gamepad1.right_stick_y*.8);
-            driveBackRight.setPower(gamepad1.right_stick_y*.8);
+           
+            driveBackLeft.setPower(gamepad1.left_stick_y *.8 + gamepad1.left_stick_x*.8);
+            driveFrontLeft.setPower(gamepad1.left_stick_y*.8+ gamepad1.left_stick_x*-.8);
+            driveFrontRight.setPower(gamepad1.left_stick_y*.8 + gamepad1.left_stick_x*.8);
+            driveBackRight.setPower(gamepad1.left_stick_y*.8 + gamepad1.left_stick_x*-.8);
+            // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
+            driveFrontLeft.setPower(gamepad1.right_stick_x * -.8);
+            driveBackLeft.setPower(gamepad1.right_stick_x * -.8);
+            driveFrontRight.setPower(gamepad1.right_stick_x*.8);
+            driveBackRight.setPower(gamepad1.right_stick_x*.8);
             if (gamepad2.right_bumper){
                 clamp.setPosition(.68);
             }
@@ -138,6 +154,13 @@ public class testnewboy extends LinearOpMode {
             }
             actuator.setPower(gamepad2.right_trigger);
             actuator.setPower(gamepad2.left_trigger*-1);
+
+            while (gamepad2.dpad_left){
+                Rotation.setPosition(.5);
+            }
+            while (gamepad2.dpad_right){
+                Rotation.setPosition(1);
+            }
 
 
 

@@ -35,11 +35,14 @@ public class test extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
        a = hardwareMap.dcMotor.get("a");
-        b = hardwareMap.dcMotor.get("b");
+        b = hardwareMap.dcMotor.get("driveFrontRight");
 
 
-
-        a.setDirection(DcMotor.Direction.REVERSE);
+        driveFrontRight.setDirection(DcMotor.Direction.REVERSE);
+        driveBackRight.setDirection(DcMotor.Direction.REVERSE);
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
+        pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
+        blinkinLedDriver.setPattern(pattern);
 
 
         //waitForStart();
@@ -49,10 +52,10 @@ public class test extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
-
-            a.setPower(gamepad1.left_stick_y);
-            b.setPower(gamepad1.left_stick_y);
-
+            driveBackLeft.setPower(0);
+            driveBackRight.setPower(0);
+            driveFrontLeft.setPower(0);
+            driveFrontRight.setPower(0);
 
             //    blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
             //else
@@ -63,7 +66,20 @@ public class test extends LinearOpMode {
             //driveFrontLeft.setPower(gamepad1.left_stick_y);
             //driveFrontRight.setPower(gamepad1.left_stick_y);
             //driveBackRight.setPower(gamepad1.left_stick_y);
+            driveBackLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
+            driveFrontLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x*-1);
+            driveFrontRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
+            driveBackRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x*-1);
+            // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
+              driveFrontLeft.setPower(gamepad1.right_stick_x * -1);
+              driveBackLeft.setPower(gamepad1.right_stick_x * -1);
+              driveFrontRight.setPower(gamepad1.right_stick_x);
+              driveBackRight.setPower(gamepad1.right_stick_x);
 
+            driveBackLeft.setPower( gamepad1.right_stick_x);
+            driveFrontLeft.setPower( gamepad1.right_stick_x*-1);
+            driveFrontRight.setPower( gamepad1.right_stick_x);
+            driveBackRight.setPower(gamepad1.right_stick_x*-1);
 
         }
         idle();
