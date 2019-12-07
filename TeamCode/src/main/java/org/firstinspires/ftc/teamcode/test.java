@@ -23,8 +23,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp(name = "Teleop", group = "TeleOp")
 public class test extends LinearOpMode {
 
-    private DcMotor driveFrontLeft;
-    private DcMotor driveFrontRight;
+    private DcMotor a;
+    private DcMotor b;
     private DcMotor driveBackLeft;
     private DcMotor driveBackRight;
 
@@ -34,16 +34,12 @@ public class test extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        driveFrontLeft = hardwareMap.dcMotor.get("driveFrontLeft");
-        driveFrontRight = hardwareMap.dcMotor.get("driveFrontRight");
-        driveBackLeft = hardwareMap.dcMotor.get("driveBackLeft");
-        driveBackRight = hardwareMap.dcMotor.get("driveBackRight");
+       a = hardwareMap.dcMotor.get("a");
+        b = hardwareMap.dcMotor.get("b");
 
-        driveFrontRight.setDirection(DcMotor.Direction.REVERSE);
-        driveBackRight.setDirection(DcMotor.Direction.REVERSE);
-        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
-        pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
-        blinkinLedDriver.setPattern(pattern);
+
+
+        a.setDirection(DcMotor.Direction.REVERSE);
 
 
         //waitForStart();
@@ -53,10 +49,10 @@ public class test extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
-            driveBackLeft.setPower(0);
-            driveBackRight.setPower(0);
-            driveFrontLeft.setPower(0);
-            driveFrontRight.setPower(0);
+
+            a.setPower(gamepad1.left_stick_y);
+            b.setPower(gamepad1.left_stick_y);
+
 
             //    blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
             //else
@@ -67,20 +63,7 @@ public class test extends LinearOpMode {
             //driveFrontLeft.setPower(gamepad1.left_stick_y);
             //driveFrontRight.setPower(gamepad1.left_stick_y);
             //driveBackRight.setPower(gamepad1.left_stick_y);
-            driveBackLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
-            driveFrontLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x*-1);
-            driveFrontRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
-            driveBackRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x*-1);
-            // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
-              driveFrontLeft.setPower(gamepad1.right_stick_x * -1);
-              driveBackLeft.setPower(gamepad1.right_stick_x * -1);
-              driveFrontRight.setPower(gamepad1.right_stick_x);
-              driveBackRight.setPower(gamepad1.right_stick_x);
 
-            driveBackLeft.setPower( gamepad1.right_stick_x);
-            driveFrontLeft.setPower( gamepad1.right_stick_x*-1);
-            driveFrontRight.setPower( gamepad1.right_stick_x);
-            driveBackRight.setPower(gamepad1.right_stick_x*-1);
 
         }
         idle();

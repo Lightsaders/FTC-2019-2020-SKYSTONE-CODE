@@ -55,6 +55,13 @@ public class testfullauto extends LinearOpMode {
     NormalizedColorSensor colorSensor0;
     private String positionSkystone = "";
     View relativeLayout;
+
+    private Servo Rotation;
+    private Servo clamp;
+    private  DcMotor intake;
+    private DcMotor liftleft;
+    private DcMotor liftright;
+    private DcMotor actuator;
     // REV HD 40:1 Motor Specs
     double COUNTS_PER_MOTOR_REV = 537.5;    // using REV HD 40:1
     double DRIVE_GEAR_REDUCTION = 1;    // 20 tooth to 15 tooth
@@ -63,28 +70,37 @@ public class testfullauto extends LinearOpMode {
     double ROBOT_RADIUS_CM = 29;
     double COUNTS_PER_CM_REV = ((COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION * TUNING_DRIVE) / (WHEEL_DIAMETER_CM * Math.PI)) / 2;
     private DistanceSensor sensorRange;
-
+    private Servo servo;
     public void runOpMode() throws InterruptedException {
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
 
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
         colorSensor0 = hardwareMap.get(NormalizedColorSensor.class, "colorb");
-
+        servo = hardwareMap.servo.get("servo");
         // If possible, turn the light on in the beginning (it might already be on anyway,
         // we just make sure it is if we can).
-        if (colorSensor instanceof SwitchableLight) {
-            ((SwitchableLight) colorSensor).enableLight(true);
-        }
-        if (colorSensor0 instanceof SwitchableLight) {
-            ((SwitchableLight) colorSensor0).enableLight(true);
-        }
-        driveFrontLeft = hardwareMap.dcMotor.get("driveFrontLeft");
-        driveFrontRight = hardwareMap.dcMotor.get("driveFrontRight");
-        driveBackLeft = hardwareMap.dcMotor.get("driveBackLeft");
-        driveBackRight = hardwareMap.dcMotor.get("driveBackRight");
-        driveFrontLeft.setDirection(DcMotor.Direction.REVERSE);
-        driveBackLeft.setDirection(DcMotor.Direction.REVERSE);
-        sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
+//        if (colorSensor instanceof SwitchableLight) {
+//            ((SwitchableLight) colorSensor).enableLight(true);
+//        }
+//        if (colorSensor0 instanceof SwitchableLight) {
+//            ((SwitchableLight) colorSensor0).enableLight(true);
+//        }
+
+
+            driveFrontLeft = hardwareMap.dcMotor.get("driveFrontLeft");
+            driveFrontRight = hardwareMap.dcMotor.get("driveFrontRight");
+            driveBackLeft = hardwareMap.dcMotor.get("driveBackLeft");
+            driveBackRight = hardwareMap.dcMotor.get("driveBackRight");
+            Rotation = hardwareMap.servo.get("Rotation");
+            actuator = hardwareMap.dcMotor.get("actuator");
+            clamp = hardwareMap.servo.get("clamp");
+            intake = hardwareMap.dcMotor.get("intake");
+            liftright = hardwareMap.dcMotor.get("liftright");
+            liftleft = hardwareMap.dcMotor.get("liftleft");
+            driveFrontRight.setDirection(DcMotor.Direction.REVERSE);
+            driveBackRight.setDirection(DcMotor.Direction.REVERSE);
+            liftleft.setDirection(DcMotor.Direction.REVERSE);
+            sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
@@ -103,7 +119,7 @@ public class testfullauto extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive() && !isStopRequested()) {
+        if (opModeIsActive() && !isStopRequested()) {
             // Check the status of the x button on the gamepad
 
             // Read the sensor
@@ -113,9 +129,10 @@ public class testfullauto extends LinearOpMode {
              * of the colors to hue, saturation and value, and display the the normalized values
              * as returned from the sensor.
              * @see <a href="http://infohost.nmt.edu/tcc/help/pubs/colortheory/web/hsv.html">HSV</a>*/
+
             straightDriveEncoder(.6, -23);
             sleep(1000);
-            strafeDriveEncoder(.6, 31, "LEFT");
+            strafeDriveEncoder(.6, 34, "LEFT");
             sleep(1000);
             telemetry.addData("deviceName", sensorRange.getDeviceName());
             telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));
@@ -128,28 +145,7 @@ public class testfullauto extends LinearOpMode {
             telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
 
             telemetry.update();
-            while (sensorRange.getDistance(DistanceUnit.INCH) < (24)) {
-                driveBackLeft.setPower(0.15);
-                driveBackRight.setPower(-0.15);
-                driveFrontLeft.setPower(-0.15);
-                driveFrontRight.setPower(0.15);
-                sleep(250);
-                telemetry.addData("deviceName", sensorRange.getDeviceName());
-                telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));
-                telemetry.addData("range", String.format("%.01f cm", sensorRange.getDistance(DistanceUnit.CM)));
-                telemetry.addData("range", String.format("%.01f m", sensorRange.getDistance(DistanceUnit.METER)));
-                telemetry.addData("range", String.format("%.01f in", sensorRange.getDistance(DistanceUnit.INCH)));
 
-                // Rev2mDistanceSensor specific methods.
-                telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
-                telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
-
-                telemetry.update();
-            }
-            driveBackLeft.setPower(0);
-            driveBackRight.setPower(0);
-            driveFrontLeft.setPower(0);
-            driveFrontRight.setPower(0);
 
             int color = colors.toColor();
             int color0 = colors0.toColor();
@@ -188,80 +184,88 @@ public class testfullauto extends LinearOpMode {
                     .addData("g", Color.green(color0))
                     .addData("b", Color.blue(color0));
             telemetry.update();
+            sleep(2000);
+            while (!isStopRequested() && opModeIsActive()  ) {
+                if (Color.red(color) < 100 && opModeIsActive() && !isStopRequested()) {
+                    telemetry.addLine("SKYSTONEWall");
+                    positionSkystone = "LEFT";
+                    colors = colorSensor.getNormalizedColors();
+                    color = colors.toColor();
+                    max = Math.max(Math.max(Math.max(colors.red, colors.green), colors.blue), colors.alpha);
+                    colors.red /= max;
+                    colors.green /= max;
+                    colors.blue /= max;
+                    color = colors.toColor();
 
-            if (Color.red(color) < 100 && opModeIsActive() && !isStopRequested()) {
-                telemetry.addLine("SKYSTONEWall");
-                positionSkystone = "CENTER";
-                colors = colorSensor.getNormalizedColors();
-                color = colors.toColor();
-                max = Math.max(Math.max(Math.max(colors.red, colors.green), colors.blue), colors.alpha);
-                colors.red /= max;
-                colors.green /= max;
-                colors.blue /= max;
-                color = colors.toColor();
+                    telemetry.addLine("IN LOOP")
+                            .addData("a", Color.alpha(color))
+                            .addData("r", Color.red(color))
+                            .addData("g", Color.green(color))
+                            .addData("b", Color.blue(color));
+                    telemetry.update();
+                    sleep(1000);
+                    if (!isStopRequested() && opModeIsActive()) {
+//                            strafeDriveEncoder(1, 53, "LEFT");
+                        telemetry.addLine(" SKYSTONE WALL");
+                        sleep(1000);
 
-                telemetry.addLine("IN LOOP")
-                        .addData("a", Color.alpha(color))
-                        .addData("r", Color.red(color))
-                        .addData("g", Color.green(color))
-                        .addData("b", Color.blue(color));
-                telemetry.update();
-                sleep(1000);
-            } else if (Color.red(color0) < 140 && opModeIsActive() && !isStopRequested()) {
-                telemetry.addLine(" SKYSTONE MIDDLE");
-                positionSkystone = "LEFT";
-                colors0 = colorSensor0.getNormalizedColors();
-                color0 = colors0.toColor();
-                max0 = Math.max(Math.max(Math.max(colors0.red, colors0.green), colors0.blue), colors0.alpha);
-                colors0.red /= max0;
-                colors0.green /= max0;
-                colors0.blue /= max0;
-                color0 = colors.toColor();
-
-                telemetry.addLine("IN LOOPb")
-                        .addData("a", Color.alpha(color0))
-                        .addData("r", Color.red(color0))
-                        .addData("g", Color.green(color0))
-                        .addData("b", Color.blue(color0));
-                telemetry.update();
-                sleep(1000);
-            } else {
-                telemetry.addLine(" SKYSTONE FAR");
-                positionSkystone = "RIGHT";
-            }
-            if (!isStopRequested() && opModeIsActive())
-                switch (positionSkystone) {
-                    case "RIGHT":
-                        if (!isStopRequested() && opModeIsActive()) {
-                           telemetry.addLine(" SKYSTONE FAR");
-                           sleep(100000);
-//                            strafeDriveEncoder(.6, 85, "LEFT");
-
+                       turnEncoder(.6,90,"CC");
+                       sleep(1000);
+                        clamp.setPosition(.68);
+                        liftleft.setPower(1);
+                        liftright.setPower(1);
+                        sleep(1000);
+                        liftleft.setPower(0);
+                        liftright.setPower(0);
+                        straightDriveEncoder(.6,34);
+                        strafeDriveEncoder(.6,250,"LEFT");
+                        clamp.setPosition(1);
+                        strafeDriveEncoder(.6,67,"RIGHT");
+//                            sleep(1500);
+//                            straightDriveEncoder(.6, 153);
+//                            sleep(1000);
+//
+//                            sleep(2000);
+//                            straightDriveEncoder(.6, -78);
+//                            strafeDriveEncoder(.6, 303, "LEFT");
 //
 //                            sleep(1500);
-//                            straightDriveEncoder(.6, 150);
-//
-//                            sleep(1400);
-//                            straightDriveEncoder(1, -147);
-//                            strafeDriveEncoder(1, 249, "LEFT");
 //                            straightDriveEncoder(1, 40);
-//
-//                            sleep(1500);
 //                            straightDriveEncoder(1, -40);
-//                            strafeDriveEncoder(1, 59, "RIGHT");
-//                            straightDriveEncoder(1, 25);
+//                            strafeDriveEncoder(1, 79, "RIGHT");
+//                            straightDriveEncoder(1, 35);
+//
+//
 //
 
-                            break;
+                        break;
+                    }
 
-                        }
 
+                } else if (Color.red(color0) < 140 && opModeIsActive() && !isStopRequested()) {
+                    telemetry.addLine(" SKYSTONE MIDDLE");
+                    positionSkystone = "CENTER";
+                    colors0 = colorSensor0.getNormalizedColors();
+                    color0 = colors0.toColor();
+                    max0 = Math.max(Math.max(Math.max(colors0.red, colors0.green), colors0.blue), colors0.alpha);
+                    colors0.red /= max0;
+                    colors0.green /= max0;
+                    colors0.blue /= max0;
+                    color0 = colors.toColor();
 
-                    case "CENTER":
-                        if (!isStopRequested() && opModeIsActive()) {
+                    telemetry.addLine("MIDDLE")
+                            .addData("a", Color.alpha(color0))
+                            .addData("r", Color.red(color0))
+                            .addData("g", Color.green(color0))
+                            .addData("b", Color.blue(color0));
+                    telemetry.update();
+                    sleep(1000);
+                    if (!isStopRequested() && opModeIsActive()) {
 //                            strafeDriveEncoder(1, 14, "LEFT");
-                            telemetry.addLine(" SKYSTONE MIDDLE");
-                            sleep(100000);
+                        telemetry.addLine(" SKYSTONE MIDDLE");
+                        sleep(1000);
+                        straightDriveEncoder(.5, 10);
+                        servo.setPosition(1);
 //                            sleep(1000);
 //                            straightDriveEncoder(.7, 153);
 //                            sleep(1000);
@@ -280,45 +284,48 @@ public class testfullauto extends LinearOpMode {
 //
 //
 
-                            break;
-                        }
-                        // straightDriveEncoder(.6,80);
-                        //  straightDriveEncoder(.6,-78);
-                        //    strafeDriveEncoder(.6,152,"LEFT");
                         break;
-                    case "LEFT":
-                        if (!isStopRequested() && opModeIsActive()) {
-//                            strafeDriveEncoder(1, 53, "LEFT");
-                            telemetry.addLine(" SKYSTONE WALL");
-                            sleep(100000);
-//                            sleep(1500);
-//                            straightDriveEncoder(.6, 153);
-//                            sleep(1000);
+                    }
+
+                } else {
+                    telemetry.addLine(" SKYSTONE FAR");
+                    positionSkystone = "RIGHT";
+                    if (!isStopRequested() && opModeIsActive()) {
+                        telemetry.addLine(" SKYSTONE FAR");
+                        sleep(1000);
+                        straightDriveEncoder(.5, 18);
+                        servo.setPosition(.9);
+                        strafeDriveEncoder(.6, 15, "RIGHT");
+
 //
-//                            sleep(2000);
-//                            straightDriveEncoder(.6, -78);
-//                            strafeDriveEncoder(.6, 303, "LEFT");
+                        sleep(1500);
+                        straightDriveEncoder(.6, 150);
 //
-//                            sleep(1500);
+//                            sleep(1400);
+//                            straightDriveEncoder(1, -147);
+//                            strafeDriveEncoder(1, 249, "LEFT");
 //                            straightDriveEncoder(1, 40);
+//
+//                            sleep(1500);
 //                            straightDriveEncoder(1, -40);
-//                            strafeDriveEncoder(1, 79, "RIGHT");
-//                            straightDriveEncoder(1, 35);
-//
-//
+//                            strafeDriveEncoder(1, 59, "RIGHT");
+//                            straightDriveEncoder(1, 25);
 //
 
-                            break;
-                        }
                         break;
-                    default:
 
-                        break;
+                    }
 
                 }
 
+                idle();
+                }
+            idle();
             }
-        }
+            }
+
+
+
 
         public void straightDriveEncoder ( double speed, double distanceCM){
             int frontLeftTarget;
