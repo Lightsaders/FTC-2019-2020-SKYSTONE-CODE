@@ -16,7 +16,7 @@ public class testnewboy extends LinearOpMode {
     private DcMotor driveBackRight;
     private Servo Rotation;
     private Servo clamp;
-    private  DcMotor intake;
+
     private DcMotor liftleft;
     private DcMotor liftright;
     private DcMotor actuator;
@@ -31,7 +31,7 @@ public class testnewboy extends LinearOpMode {
         Rotation = hardwareMap.servo.get("Rotation");
         actuator = hardwareMap.dcMotor.get("actuator");
         clamp = hardwareMap.servo.get("clamp");
-        intake = hardwareMap.dcMotor.get("intake");
+
         liftright = hardwareMap.dcMotor.get("liftright");
         liftleft = hardwareMap.dcMotor.get("liftleft");
         driveFrontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -119,48 +119,50 @@ public class testnewboy extends LinearOpMode {
             if (gamepad2.left_bumper){
                 clamp.setPosition(1);
             }
-            if(gamepad2.a){// stop
-                intake.setPower(0.0);
-            }
-            if(gamepad2.x){// reverse
-                intake.setPower(-1.0);
-            }
-            if(gamepad2.b){// forward
-                intake.setPower(1.0);
-                liftleft.setMode(DcMotor.RunMode.RESET_ENCODERS);
-                liftright.setMode(DcMotor.RunMode.RESET_ENCODERS);
-                liftleft.getCurrentPosition();
-                liftright.getCurrentPosition();
-                liftleft.setTargetPosition(20);
-                liftright.setTargetPosition(20);
 
-                // Turn on run to position
-                liftleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                liftright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                liftleft.setPower(.5);
-                liftright.setPower(.5);
-                sleep(1000);
-                liftleft.setPower(0);
-                liftright.setPower(0);
-
-                //Turn off run to position
-
-                liftleft.setPower(0);
-                liftright.setPower(0);
-                //Turn off run to position
-                liftleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                liftright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            }
+//            if(gamepad2.b){// forward
+//                intake.setPower(1.0);
+//                liftleft.setMode(DcMotor.RunMode.RESET_ENCODERS);
+//                liftright.setMode(DcMotor.RunMode.RESET_ENCODERS);
+//                liftleft.getCurrentPosition();
+//                liftright.getCurrentPosition();
+//                liftleft.setTargetPosition(20);
+//                liftright.setTargetPosition(20);
+//
+//                // Turn on run to position
+//                liftleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                liftright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                liftleft.setPower(.5);
+//                liftright.setPower(.5);
+//                sleep(1000);
+//                liftleft.setPower(0);
+//                liftright.setPower(0);
+//
+//                //Turn off run to position
+//
+//                liftleft.setPower(0);
+//                liftright.setPower(0);
+//                //Turn off run to position
+//                liftleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//                liftright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//            }
             actuator.setPower(gamepad2.right_trigger);
             actuator.setPower(gamepad2.left_trigger*-1);
 
             while (gamepad2.dpad_left){
-                Rotation.setPosition(.5);
+                Rotation.setPosition(.4);
             }
             while (gamepad2.dpad_right){
-                Rotation.setPosition(1);
+                Rotation.setPosition(.8);
             }
+            liftleft.setPower(gamepad2.left_stick_y);
+            liftright.setPower(gamepad2.left_stick_y);
+            while (gamepad2.y){
+                liftleft.setPower(.16);
+                liftright.setPower(.16);
+            }
+
 
 
 
