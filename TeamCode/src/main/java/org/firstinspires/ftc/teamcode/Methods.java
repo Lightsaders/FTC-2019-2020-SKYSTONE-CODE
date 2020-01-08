@@ -5,21 +5,18 @@ import android.view.View;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-public class Methods extends LinearOpMode {
-
+public class Methods extends LinearOpMode{
     // Drive Motors
     public DcMotor driveFrontLeft;
     public DcMotor driveFrontRight;
     public DcMotor driveBackLeft;
     public DcMotor driveBackRight;
-    
+
     // Color Sensors
     public NormalizedColorSensor colorSensorLeft;
     public NormalizedColorSensor colorSensorRight;
@@ -32,7 +29,6 @@ public class Methods extends LinearOpMode {
     public Servo clamp;
 
     // Motors
-    public DcMotor intake;
     public DcMotor liftleft;
     public DcMotor liftright;
     public DcMotor actuator;
@@ -45,8 +41,9 @@ public class Methods extends LinearOpMode {
     double ROBOT_RADIUS_CM = 29;
     double COUNTS_PER_CM_REV = ((COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION * TUNING_DRIVE) / (WHEEL_DIAMETER_CM * Math.PI)) / 2;
 
-    @Override
-    public void runOpMode() throws InterruptedException {
+    public HardwareMap hardwareMap = null;
+
+    public void init(HardwareMap hardwareMap) throws InterruptedException {
 
         // Init Drive Motors
         driveFrontLeft = hardwareMap.dcMotor.get("driveFrontLeft");
@@ -68,7 +65,6 @@ public class Methods extends LinearOpMode {
 
         // Init Motors
         actuator = hardwareMap.dcMotor.get("actuator");
-        intake = hardwareMap.dcMotor.get("intake");
         liftright = hardwareMap.dcMotor.get("liftright");
         liftleft = hardwareMap.dcMotor.get("liftleft");
     }
@@ -142,6 +138,8 @@ public class Methods extends LinearOpMode {
             driveFrontRight.setPower(Math.abs(speed));
             driveBackLeft.setPower(Math.abs(speed));
             driveBackRight.setPower(Math.abs(speed));
+
+            sleep(10000000);
 
             t = getRuntime();
             end = (Math.abs(distanceCM) / 10.16) / (speed / 0.1) + getRuntime();
@@ -356,5 +354,10 @@ public class Methods extends LinearOpMode {
         }
         //telemetrySender("DEGREES CURRENT: ", "" + getCurrentHeading(), "");
         //telemetrySender("DEGREES FINAL: ", "" + (getCurrentHeading() + headingStart), "");
+    }
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+
     }
 }
