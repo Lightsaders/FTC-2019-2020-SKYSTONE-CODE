@@ -25,7 +25,7 @@ public class Smart_Auto_Red extends Auto_Methods {
 
             turnEncoder(1,45,"Left");// TODO Need to test this and make sure it works
 
-            skystoneColorScan();// TODO Need to test this and make sure it works
+            skystoneColorScan();// TODO Need to test this and make sure it worksS
 
         }
     }
