@@ -48,7 +48,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-@Autonomous(name = "Test_Full_Auto")
+@Autonomous(name = "RESET")
 public class Test_Full_Auto extends LinearOpMode {
     public DcMotor driveFrontLeft;
     public DcMotor driveFrontRight;
@@ -112,131 +112,9 @@ public class Test_Full_Auto extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive() && !isStopRequested()) {
-           straightDriveEncoder(.4,30);
-           sleep(1000);
-           telemetry.addLine("i did not f up");
-            // Check the status of the x button on the gamepad
-            NormalizedRGBA colorsLeft = colorSensorLeft.getNormalizedColors();
-            NormalizedRGBA colorsRight = colorSensorRight.getNormalizedColors();
-
-            // Settings Colors
-            float max = Math.max(Math.max(Math.max(colorsLeft.red, colorsLeft.green), colorsLeft.blue), colorsLeft.alpha);
-            colorsLeft.red /= max;
-            colorsLeft.green /= max;
-            colorsLeft.blue /= max;
-            float max0 = Math.max(Math.max(Math.max(colorsRight.red, colorsRight.green), colorsRight.blue), colorsRight.alpha);
-            colorsRight.red /= max0;
-            colorsRight.green /= max0;
-            colorsRight.blue /= max0;
-
-            // Scanning Loop
-            while (!isStopRequested() && opModeIsActive()) {
-                if (colorsLeft.red < 100 && opModeIsActive() && !isStopRequested()) {// If left color sensor is black then skystone is left
-                    telemetry.addLine("SKYSTONE LEFT");
-                    positionSkystone = "LEFT";
-                } else if (colorsRight.red < 140 && opModeIsActive() && !isStopRequested()) {// If right color sensor is black then skystone is middle
-                    telemetry.addLine(" SKYSTONE MIDDLE");
-                    positionSkystone = "CENTER";
-                } else {// If neither color sensor is black then by process of elimination it has to be right
-                    telemetry.addLine(" SKYSTONE RIGHT");
-                    positionSkystone = "RIGHT";
-                }
-            }
-                switch (positionSkystone) {
-                    case "LEFT":
-                        if (!isStopRequested() && opModeIsActive()) {
-//                            strafeDriveEncoder(1, 53, "LEFT");
-                            telemetry.addLine(" SKYSTONE WALL");
-                            sleep(1000);
-
-                            turnEncoder(.6, 90, "CC");
-                            sleep(1000);
-                            clamp.setPosition(.68);
-                            liftleft.setPower(1);
-                            liftright.setPower(1);
-                            sleep(1000);
-                            liftleft.setPower(0);
-                            liftright.setPower(0);
-                            straightDriveEncoder(.6, 34);
-                            strafeDriveEncoder(.6, 250, "LEFT");
-                            clamp.setPosition(1);
-                            strafeDriveEncoder(.6, 67, "RIGHT");
-//                            sleep(1500);
-//                            straightDriveEncoder(.6, 153);
-//                            sleep(1000);
-//
-//                            sleep(2000);
-//                            straightDriveEncoder(.6, -78);
-//                            strafeDriveEncoder(.6, 303, "LEFT");
-//
-//                            sleep(1500);
-//                            straightDriveEncoder(1, 40);
-//                            straightDriveEncoder(1, -40);
-//                            strafeDriveEncoder(1, 79, "RIGHT");
-//                            straightDriveEncoder(1, 35);
-//
-//
-//
-
-                            break;
-                        }
-                    case "CENTER":
-                        if (!isStopRequested() && opModeIsActive()) {
-//                            strafeDriveEncoder(1, 14, "LEFT");
-                            telemetry.addLine(" SKYSTONE MIDDLE");
-                            sleep(1000);
-                            straightDriveEncoder(.5, 10);
-
-//                            sleep(1000);
-//                            straightDriveEncoder(.7, 153);
-//                            sleep(1000);
-//
-//                            sleep(2000);
-//                            straightDriveEncoder(.6, -78);
-//                            strafeDriveEncoder(.6, 343, "LEFT");
-//
-//                            sleep(1500);
-//                            straightDriveEncoder(1, 40);
-//                            straightDriveEncoder(1, -40);
-//                            strafeDriveEncoder(1, 69, "RIGHT");
-//                            straightDriveEncoder(1, 25);
-//
-//
-//
-//
-
-                            break;
-                        }
-                    case "RIGHT":
-                        if (!isStopRequested() && opModeIsActive()) {
-                            telemetry.addLine(" SKYSTONE FAR");
-                            sleep(1000);
-                            straightDriveEncoder(.5, 18);
-
-                            strafeDriveEncoder(.6, 15, "RIGHT");
-
-//
-                            sleep(1500);
-                            straightDriveEncoder(.6, 150);
-//
-                            sleep(1400);
-                            straightDriveEncoder(1, -147);
-                            strafeDriveEncoder(1, 249, "LEFT");
-                            straightDriveEncoder(1, 40);
-
-                            sleep(1500);
-                            straightDriveEncoder(1, -40);
-                            strafeDriveEncoder(1, 59, "RIGHT");
-                            straightDriveEncoder(1, 25);
-
-
-                        }
-                        break;
-                    default:
-                        telemetry.addLine("I screwed up badly");
-
-
-                }
+           actuator.setPower(-1);//TODO FIX THIS
+            sleep(400);
+            actuator.setPower(0);
 
                 idle();
             }

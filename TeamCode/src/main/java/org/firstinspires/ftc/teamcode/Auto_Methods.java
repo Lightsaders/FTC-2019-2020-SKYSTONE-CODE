@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Color;
+import android.sax.TextElementListener;
 import android.view.View;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
@@ -29,11 +31,16 @@ public abstract class Auto_Methods extends LinearOpMode {
     // Servos
     public Servo rotation;
     public Servo clamp;
+    public Servo rightFoundation;
+    public Servo leftFoundation;
 
     // Motors
     public DcMotor liftleft;
     public DcMotor liftright;
     public DcMotor actuator;
+
+    // Limit Switch
+    public DigitalChannel limitSwitch;
 
     // Gobilda Motor Specs
     double COUNTS_PER_MOTOR_REV = 537.5;    // gobilda
@@ -43,7 +50,7 @@ public abstract class Auto_Methods extends LinearOpMode {
     double ROBOT_RADIUS_CM = 29;
     double COUNTS_PER_CM_GOBUILDA = ((COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION * TUNING_DRIVE) / (WHEEL_DIAMETER_CM * Math.PI)) / 2;
 
-    public void initialize(){
+    public void initialize() {
 
         // Init Drive Motors
         driveFrontLeft = hardwareMap.dcMotor.get("driveFrontLeft");
@@ -68,20 +75,29 @@ public abstract class Auto_Methods extends LinearOpMode {
         // Init Servos
         rotation = hardwareMap.servo.get("rotation");
         clamp = hardwareMap.servo.get("clamp");
+        rightFoundation = hardwareMap.servo.get("rightFoundation");
+        leftFoundation = hardwareMap.servo.get("leftFoundation");
 
         // Init Motors
         actuator = hardwareMap.dcMotor.get("actuator");
         liftright = hardwareMap.dcMotor.get("liftright");
         liftleft = hardwareMap.dcMotor.get("liftleft");
 
-
+        // Init Limit Switch
+        limitSwitch = hardwareMap.get(DigitalChannel.class, "limitSwitch");
+        limitSwitch.setMode(DigitalChannel.Mode.INPUT);
     }
 
     // This sets positionSkystone according to the colorSensors
-    public void skystoneColorScan(){
-        // Init Variables
+    public void skystoneColorScan(String color) {
+        // Check the status of the x button on the gamepad
         NormalizedRGBA colorsLeft = colorSensorLeft.getNormalizedColors();
         NormalizedRGBA colorsRight = colorSensorRight.getNormalizedColors();
+
+        float[] hsvValuesLeft = new float[3];
+        final float valuesLeft[] = hsvValuesLeft;
+        float[] hsvValuesRight = new float[3];
+        final float valuesRight[] = hsvValuesRight;
 
         // Settings Colors
         float max = Math.max(Math.max(Math.max(colorsLeft.red, colorsLeft.green), colorsLeft.blue), colorsLeft.alpha);
@@ -93,23 +109,87 @@ public abstract class Auto_Methods extends LinearOpMode {
         colorsRight.green /= max0;
         colorsRight.blue /= max0;
 
+//        while(opModeIsActive() && !isStopRequested()) {
+            colorsLeft = colorSensorLeft.getNormalizedColors();
+            Color.colorToHSV(colorsLeft.toColor(), hsvValuesLeft);
+            telemetry.addLine()
+                    .addData("H", "%.3f", hsvValuesLeft[0])
+                    .addData("S", "%.3f", hsvValuesLeft[1])
+                    .addData("V", "%.3f", hsvValuesLeft[2]);
+            telemetry.addLine()
+                    .addData("a", "%.3f", colorsLeft.alpha)
+                    .addData("r", "%.3f", colorsLeft.red)
+                    .addData("g", "%.3f", colorsLeft.green)
+                    .addData("b", "%.3f", colorsLeft.blue);
+
+            colorsRight = colorSensorRight.getNormalizedColors();
+            Color.colorToHSV(colorsRight.toColor(), hsvValuesRight);
+            telemetry.addLine()
+                    .addData("H", "%.3f", hsvValuesRight[0])
+                    .addData("S", "%.3f", hsvValuesRight[1])
+                    .addData("V", "%.3f", hsvValuesRight[2]);
+            telemetry.addLine()
+                    .addData("a", "%.3f", colorsRight.alpha)
+                    .addData("r", "%.3f", colorsRight.red)
+                    .addData("g", "%.3f", colorsRight.green)
+                    .addData("b", "%.3f", colorsRight.blue);
+
+            telemetry.update();
+//        }
+
         // Scanning Loop
-        while (!isStopRequested() && opModeIsActive()) {
-            if (colorsLeft.red < 100 && opModeIsActive() && !isStopRequested()) {// If left color sensor is black then skystone is left
-                telemetry.addLine("SKYSTONE LEFT");
-                positionSkystone = "LEFT";
-            } else if (colorsRight.red < 140 && opModeIsActive() && !isStopRequested()) {// If right color sensor is black then skystone is middle
-                telemetry.addLine(" SKYSTONE MIDDLE");
-                positionSkystone = "CENTER";
-            } else {// If neither color sensor is black then by process of elimination it has to be right
-                telemetry.addLine(" SKYSTONE RIGHT");
-                positionSkystone = "RIGHT";
+        if (!isStopRequested() && opModeIsActive()) {
+            colorsLeft = colorSensorLeft.getNormalizedColors();
+            Color.colorToHSV(colorsLeft.toColor(), hsvValuesLeft);
+            colorsRight = colorSensorRight.getNormalizedColors();
+            Color.colorToHSV(colorsRight.toColor(), hsvValuesRight);
+            if (hsvValuesLeft[0] >= 60 && hsvValuesRight[0] < 60 && opModeIsActive() && !isStopRequested()) {// If left color sensor is black then skystone is wall
+                switch (color) {
+                    case "RED":
+                        positionSkystone = "WALL";
+//                        telemetry.addLine("SKYSTONE WALL");
+//                        telemetry.update();
+                        break;
+                    case "BLUE":
+                        positionSkystone = "MIDDLE";
+//                        telemetry.addLine("SKYSTONE BRIDGE");
+//                        telemetry.update();
+                        break;
+                }
+            } else if (hsvValuesRight[0] >= 60 && hsvValuesLeft[0] < 60 && opModeIsActive() && !isStopRequested()) {// If right color sensor is black then skystone is middle
+                switch (color) {
+                    case "BLUE":
+                        positionSkystone = "WALL";
+//                        telemetry.addLine("SKYSTONE WALL");
+//                        telemetry.update();
+                        break;
+                    case "RED":
+                        positionSkystone = "MIDDLE";
+//                        telemetry.addLine("SKYSTONE BRIDGE");
+//                        telemetry.update();
+                        break;
+                }
+//                telemetry.addLine("SKYSTONE MIDDLE");
+//                telemetry.update();
+            } else {// If neither color sensor is black then by process of elimination it has to be bridge
+                switch (color) {
+                    case "BLUE":
+                        positionSkystone = "BRIDGE";
+//                        telemetry.addLine("SKYSTONE WALL");
+//                        telemetry.update();
+                        break;
+                    case "RED":
+                        positionSkystone = "BRIDGE";
+//                        telemetry.addLine("SKYSTONE MIDDLE");
+//                        telemetry.update();
+                        break;
+                }
             }
         }
     }
 
     // Drives the robot forward or backward for a given speed and distance according to the encoder
-    public void straightDriveEncoder(double speed, double distanceCM) {
+    public void straightDriveEncoder(double speed, double distanceCM, double custom) {
         int frontLeftTarget;
         int backLeftTarget;
         int frontRightTarget;
@@ -148,8 +228,7 @@ public abstract class Auto_Methods extends LinearOpMode {
             driveBackRight.setPower(Math.abs(speed));
 
             t = getRuntime();
-            end = (Math.abs(distanceCM) / 10.16) / (speed / 0.1) + getRuntime();
-
+            end = (Math.abs(distanceCM) / 10.16) / (speed / 0.1) + getRuntime() - custom;
 
             while (opModeIsActive() && !isStopRequested() &&
                     (getRuntime() <= end) &&
@@ -196,37 +275,58 @@ public abstract class Auto_Methods extends LinearOpMode {
         switch (direction) {
             case "LEFT":
                 // Determine new target position, and pass to motor controller
-                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -.32);
-                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * .32);
-                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * .32);
-                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -.32);
+                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -1.8);
+                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * 1.8);
+                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * 1.8);
+                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -1.8);
+
+
+                // set target position to each motor
+                driveFrontLeft.setTargetPosition(frontLeftTarget);
+                driveFrontRight.setTargetPosition(frontRightTarget);
+                driveBackLeft.setTargetPosition(backLeftTarget);
+                driveBackRight.setTargetPosition(backRightTarget);
+
+                // Turn on run to position
+                driveFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                driveFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                driveBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                driveBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                driveFrontLeft.setPower(Math.abs(speed) * 0.8);
+                driveFrontRight.setPower(Math.abs(speed) * 1);
+                driveBackLeft.setPower(Math.abs(speed) * 1);
+                driveBackRight.setPower(Math.abs(speed) * 0.8);
+
                 break;
             case "RIGHT":
                 // Determine new target position, and pass to motor controller
-                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * .32);
-                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -.32);
-                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -.32);
-                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * .32);
+                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * 1.8);
+                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -1.8);
+                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -1.8);
+                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * 1.8);
+
+
+                // set target position to each motor
+                driveFrontLeft.setTargetPosition(frontLeftTarget);
+                driveFrontRight.setTargetPosition(frontRightTarget);
+                driveBackLeft.setTargetPosition(backLeftTarget);
+                driveBackRight.setTargetPosition(backRightTarget);
+
+                // Turn on run to position
+                driveFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                driveFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                driveBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                driveBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                driveFrontLeft.setPower(Math.abs(speed) * 1);// Change this if you want the robot to strafe more backwards
+                driveFrontRight.setPower(Math.abs(speed) * 1);// Change this if you want the robot to strafe more forwards
+                driveBackLeft.setPower(Math.abs(speed) * 1);// Change this if you want the robot to strafe more forwards
+                driveBackRight.setPower(Math.abs(speed) * 1);// Change this if you want the robot to strafe more backwards
                 break;
         }
         if (opModeIsActive()) {
 
-            // set target position to each motor
-            driveFrontLeft.setTargetPosition(frontLeftTarget);
-            driveFrontRight.setTargetPosition(frontRightTarget);
-            driveBackLeft.setTargetPosition(backLeftTarget);
-            driveBackRight.setTargetPosition(backRightTarget);
-
-            // Turn on run to position
-            driveFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            driveFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            driveBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            driveBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            driveFrontLeft.setPower(Math.abs(speed));
-            driveFrontRight.setPower(Math.abs(speed));
-            driveBackLeft.setPower(Math.abs(speed));
-            driveBackRight.setPower(Math.abs(speed));
 
             t = getRuntime();
             end = (Math.abs(distance) / 26.54) / (speed / 0.7) + getRuntime();
@@ -267,7 +367,7 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     // Turns the robot clockwise(c) or countr-clockwise(cc) for a given speed and degree according to the encoder
     public void turnEncoder(double speed, double turnDegrees, String direction) {
-        double tuning = 1.1;
+        double tuning = 1.46;
         double distance = ROBOT_RADIUS_CM * tuning * (((turnDegrees) * (Math.PI)) / (180)); // Using arc length formula
         int frontLeftTarget = 0;
         int backLeftTarget = 0;
@@ -361,6 +461,46 @@ public abstract class Auto_Methods extends LinearOpMode {
         //telemetrySender("DEGREES CURRENT: ", "" + getCurrentHeading(), "");
         //telemetrySender("DEGREES FINAL: ", "" + (getCurrentHeading() + headingStart), "");
     }
+
+    public void clamp(String position) {
+        switch (position) {
+            case "OPEN":
+                clamp.setPosition(1);
+                break;
+            case "CLOSE":
+                clamp.setPosition(.5);
+                break;
+            case "SEMI OPEN":
+                clamp.setPosition(.8);
+                break;
+        }
+    }
+
+    public void foundationClamps(String state) {
+        switch (state) {
+            case "DOWN":
+                leftFoundation.setPosition(1);
+                rightFoundation.setPosition(0.15);
+                break;
+            case "UP":
+                leftFoundation.setPosition(0);
+                rightFoundation.setPosition(1);
+                break;
+        }
+        sleep(200);
+    }
+
+    public void turnClamp(String state) {
+        switch (state) {
+            case "PERP":
+                rotation.setPosition(0.8);
+                break;
+            case "PAR":
+                rotation.setPosition(0.4);
+                break;
+        }
+    }// TODO Make sure this is correct
+
 
     @Override
     public void runOpMode() throws InterruptedException {

@@ -1,0 +1,28 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+@Autonomous(name = "FOUNDATION_GRAB_RED")
+public class Foundation_Grab_Red extends Auto_Methods {
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+        // init robot
+        initialize();
+        waitForStart();
+
+        if (opModeIsActive() && !isStopRequested()) {
+            strafeDriveEncoder(.7,19,"RIGHT");
+            straightDriveEncoder(.3,120,0);
+            leftFoundation.setPosition(1);
+            rightFoundation.setPosition(0.15);
+            sleep(1500);
+            straightDriveEncoder(.3,-130,0);
+            leftFoundation.setPosition(0);
+            rightFoundation.setPosition(1);
+            sleep(1500);
+            strafeDriveEncoder(.8,100,"LEFT");
+        }
+    }
+}

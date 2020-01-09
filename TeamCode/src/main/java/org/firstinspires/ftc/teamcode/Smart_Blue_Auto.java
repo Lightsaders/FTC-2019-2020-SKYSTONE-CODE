@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "SMART_AUTO_RED")
-public class Smart_Auto_Red extends Auto_Methods {
+@Autonomous(name = "SMART_AUTO_BLUE")
+public class Smart_Blue_Auto extends Auto_Methods {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -16,23 +16,23 @@ public class Smart_Auto_Red extends Auto_Methods {
             turnClamp("PAR");
             clamp("OPEN");
             straightDriveEncoder(0.2, 106, 3);
-            skystoneColorScan("RED");
+            skystoneColorScan("BLUE");
             telemetry.addLine("Skystone position: " + positionSkystone);
             telemetry.update();
             switch (positionSkystone) {
                 case "WALL":
                     if (!isStopRequested() && opModeIsActive()) {
                         straightDriveEncoder(.2,-9,0);
-                        strafeDriveEncoder(1,15,"LEFT");
+                        strafeDriveEncoder(1,15,"RIGHT");
                         actuator.setPower(1);
                         sleep(400);
                         actuator.setPower(0);
                         clamp("CLOSE");
                         straightDriveEncoder(0.2, -30, 1);
-                        turnEncoder(.4,95,"C");
+                        turnEncoder(.4,95,"CC");
                         straightDriveEncoder(0.6, 200, 1);
                         clamp("OPEN");
-                        straightDriveEncoder(.5,-65,1);
+                        straightDriveEncoder(.5,-65,0);
 //                        turnEncoder(.4,95,"CC");
 //                        straightDriveEncoder(0.2, 30, 1.5);
 //                        straightDriveEncoder(0.2, 106, 3);
@@ -50,27 +50,28 @@ public class Smart_Auto_Red extends Auto_Methods {
                     break;
                 case "MIDDLE":
                     if (!isStopRequested() && opModeIsActive()) {
-                        strafeDriveEncoder(1,15,"RIGHT");
-                        actuator.setPower(1);
+                        strafeDriveEncoder(1,15,"LEFT");
+                        actuator.setPower(1);//TODO FIX THIS
                         sleep(300);
                         actuator.setPower(0);
                         clamp("CLOSE");
                         straightDriveEncoder(0.2, -30, 1);
-                        turnEncoder(.4,95,"C");
+                        turnEncoder(.4,95,"CC");
                         straightDriveEncoder(0.6, 170, 0);
                         clamp("OPEN");
-                        straightDriveEncoder(.5,-65,1);
+                        straightDriveEncoder(.5,-65,0);
                     }
                     break;
                 case "BRIDGE":
                     if (!isStopRequested() && opModeIsActive()) {
-                        strafeDriveEncoder(1,35,"RIGHT");
-                        actuator.setPower(1);
+                        straightDriveEncoder(.2,-9,0);
+                        strafeDriveEncoder(1,35,"LEFT");     //TODO FIX THIS
+                        actuator.setPower(1);//TODO FIX THIS
                         sleep(300);
                         actuator.setPower(0);
                         clamp("CLOSE");
                         straightDriveEncoder(0.2, -30, 1.5);
-                        turnEncoder(.4,95,"C");
+                        turnEncoder(.4,95,"CC");
                         straightDriveEncoder(0.2, 150, 3);
                         clamp("OPEN");
                         straightDriveEncoder(.5,-40,0);
