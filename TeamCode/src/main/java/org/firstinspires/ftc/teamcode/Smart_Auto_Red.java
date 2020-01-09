@@ -20,8 +20,13 @@ public class Smart_Auto_Red extends Auto_Methods {
             // Robot actions in auto
 
             straightDriveEncoder(1,20);
-//            method.driveFrontLeft.setPower(1.0);
-//            sleep(1000);
+
+            strafeDriveEncoder(1,20,"Left");// TODO Need to test this and make sure it works
+
+            turnEncoder(1,45,"Left");// TODO Need to test this and make sure it works
+
+            skystoneColorScan();// TODO Need to test this and make sure it works
+
         }
     }
 }

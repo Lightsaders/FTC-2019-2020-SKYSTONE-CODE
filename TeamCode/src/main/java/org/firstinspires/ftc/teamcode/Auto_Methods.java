@@ -41,7 +41,7 @@ public abstract class Auto_Methods extends LinearOpMode {
     double WHEEL_DIAMETER_CM = 11;     // mecanum wheels
     double TUNING_DRIVE = 1.1;
     double ROBOT_RADIUS_CM = 29;
-    double COUNTS_PER_CM_REV = ((COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION * TUNING_DRIVE) / (WHEEL_DIAMETER_CM * Math.PI)) / 2;
+    double COUNTS_PER_CM_GOBUILDA = ((COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION * TUNING_DRIVE) / (WHEEL_DIAMETER_CM * Math.PI)) / 2;
 
     public void initialize(){
 
@@ -125,10 +125,10 @@ public abstract class Auto_Methods extends LinearOpMode {
             driveBackRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
             // Determine new target position, and pass to motor controller
-            frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_REV);
-            frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_REV);
-            backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_REV);
-            backRightTarget = driveBackRight.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_REV);
+            frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA);
+            frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA);
+            backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA);
+            backRightTarget = driveBackRight.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA);
 
             // set target position to each motor
             driveFrontLeft.setTargetPosition(frontLeftTarget);
@@ -196,17 +196,17 @@ public abstract class Auto_Methods extends LinearOpMode {
         switch (direction) {
             case "LEFT":
                 // Determine new target position, and pass to motor controller
-                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_REV * -.32);
-                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_REV * .32);
-                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_REV * .32);
-                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_REV * -.32);
+                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -.32);
+                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * .32);
+                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * .32);
+                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -.32);
                 break;
             case "RIGHT":
                 // Determine new target position, and pass to motor controller
-                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_REV * .32);
-                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_REV * -.32);
-                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_REV * -.32);
-                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_REV * .32);
+                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * .32);
+                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -.32);
+                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -.32);
+                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * .32);
                 break;
         }
         if (opModeIsActive()) {
@@ -285,17 +285,17 @@ public abstract class Auto_Methods extends LinearOpMode {
         switch (direction) {
             case "C":
                 // Determine new target position, and pass to motor controller
-                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_REV);
-                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distance * -1 * COUNTS_PER_CM_REV);
-                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_REV);
-                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distance * -1 * COUNTS_PER_CM_REV);
+                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA);
+                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distance * -1 * COUNTS_PER_CM_GOBUILDA);
+                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA);
+                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distance * -1 * COUNTS_PER_CM_GOBUILDA);
                 break;
             case "CC":
                 // Determine new target position, and pass to motor controller
-                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distance * -1 * COUNTS_PER_CM_REV);
-                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_REV);
-                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distance * -1 * COUNTS_PER_CM_REV);
-                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_REV);
+                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distance * -1 * COUNTS_PER_CM_GOBUILDA);
+                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA);
+                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distance * -1 * COUNTS_PER_CM_GOBUILDA);
+                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA);
                 break;
         }
 
