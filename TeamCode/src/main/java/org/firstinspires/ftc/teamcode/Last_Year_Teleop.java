@@ -2,14 +2,16 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "Teleowrld", group = "TeleOp")
-public class ndlyTO extends LinearOpMode {
+@TeleOp(name = "Last_Year_Teleop", group = "TeleOp")
+@Disabled
+public class Last_Year_Teleop extends LinearOpMode {
 
     private DcMotor driveFrontLeft;
     private DcMotor driveFrontRight;
@@ -24,7 +26,7 @@ public class ndlyTO extends LinearOpMode {
         driveBackLeft = hardwareMap.dcMotor.get("driveBackLeft");
         driveBackRight = hardwareMap.dcMotor.get("driveBackRight");
 
-        driveBackLeft.setDirection(DcMotor.Direction.REVERSE);
+        driveFrontRight.setDirection(DcMotor.Direction.REVERSE);
         driveBackRight.setDirection(DcMotor.Direction.REVERSE);
 
 
@@ -59,15 +61,19 @@ public class ndlyTO extends LinearOpMode {
 
             //TODO make it not have to be held
 
-            telemetry.addLine("yay it works");
-            telemetry.update();
+                telemetry.addLine("yay it works");
+                telemetry.update();
 //
 
-            driveBackLeft.setPower(gamepad1.left_stick_y * .8);
-            driveFrontLeft.setPower(gamepad1.right_stick_y * .8);
-            driveFrontRight.setPower(gamepad1.right_stick_y * .8);
-            driveBackRight.setPower(gamepad1.left_stick_y * .8);
-
+                driveBackLeft.setPower(gamepad1.left_stick_y * .8 + gamepad1.left_stick_x * .8);
+                driveFrontLeft.setPower(gamepad1.left_stick_y * .8 + gamepad1.left_stick_x * -.8);
+                driveFrontRight.setPower(gamepad1.left_stick_y * .8 + gamepad1.left_stick_x * .8);
+                driveBackRight.setPower(gamepad1.left_stick_y * .8 + gamepad1.left_stick_x * -.8);
+                // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
+                driveFrontLeft.setPower(gamepad1.right_stick_x * -.8);
+                driveBackLeft.setPower(gamepad1.right_stick_x * -.8);
+                driveFrontRight.setPower(gamepad1.right_stick_x * .8);
+                driveBackRight.setPower(gamepad1.right_stick_x * .8);
 
 
 
