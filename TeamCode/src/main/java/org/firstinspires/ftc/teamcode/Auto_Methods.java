@@ -6,6 +6,7 @@ import android.view.View;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
@@ -51,8 +52,8 @@ public abstract class Auto_Methods extends LinearOpMode {
         driveBackRight = hardwareMap.dcMotor.get("driveBackRight");
 
         // Reverse Drive Motors
-        driveFrontRight.setDirection(DcMotor.Direction.REVERSE);
-        driveBackRight.setDirection(DcMotor.Direction.REVERSE);
+        driveFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        driveBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Setting Zero Behavior for Drive Train Motors
         driveFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
