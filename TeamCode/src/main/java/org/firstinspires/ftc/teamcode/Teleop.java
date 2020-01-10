@@ -4,6 +4,7 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -24,6 +25,7 @@ public class Teleop extends LinearOpMode {
     DigitalChannel limitSwitch;
     public Servo rightFoundation;
     public Servo leftFoundation;
+    public boolean toggle;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -35,12 +37,13 @@ public class Teleop extends LinearOpMode {
         rotation = hardwareMap.servo.get("rotation");
         actuator = hardwareMap.dcMotor.get("actuator");
         clamp = hardwareMap.servo.get("clamp");
-
         liftright = hardwareMap.dcMotor.get("liftright");
         liftleft = hardwareMap.dcMotor.get("liftleft");
-        driveFrontRight.setDirection(DcMotor.Direction.REVERSE);
-        driveBackRight.setDirection(DcMotor.Direction.REVERSE);
-        liftleft.setDirection(DcMotor.Direction.REVERSE);
+
+        driveFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        driveBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftright.setDirection(DcMotor.Direction.REVERSE);
+
         limitSwitch = hardwareMap.get(DigitalChannel.class, "limitSwitch");
         rightFoundation = hardwareMap.servo.get("rightFoundation");
         leftFoundation = hardwareMap.servo.get("leftFoundation");
@@ -80,24 +83,12 @@ public class Teleop extends LinearOpMode {
 
 
             //TODO make it not have to be held
+
             while (gamepad1.right_bumper) {
-                telemetry.addLine("yay it works");
-                telemetry.update();
-//                driveBackLeft.setPower(gamepad1.left_stick_y *.24 + gamepad1.left_stick_x*.24);
-//                driveFrontLeft.setPower(gamepad1.left_stick_y *.24 + gamepad1.left_stick_x * -.24);
-//                driveFrontRight.setPower(gamepad1.left_stick_y*.24 + gamepad1.left_stick_x*.24);
-//                driveBackRight.setPower(gamepad1.left_stick_y*.24 + gamepad1.left_stick_x * -.24);
-//                // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
-//                driveFrontLeft.setPower(gamepad1.right_stick_x * -.24);
-//                driveBackLeft.setPower(gamepad1.right_stick_x * -.24);
-//                driveFrontRight.setPower(gamepad1.right_stick_x*.24);
-//                driveBackRight.setPower(gamepad1.right_stick_x*.24);
-            }
-            while (gamepad1.right_bumper) {
-                driveBackLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
-                driveFrontLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x * -1);
-                driveFrontRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
-                driveBackRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x * -1);
+                driveBackLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x * -1);
+                driveFrontLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x );
+                driveFrontRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x*-1);
+                driveBackRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
                 // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
                 driveFrontLeft.setPower(gamepad1.right_stick_x * -1);
                 driveBackLeft.setPower(gamepad1.right_stick_x * -1);
@@ -115,16 +106,22 @@ public class Teleop extends LinearOpMode {
                 driveFrontRight.setPower(gamepad1.right_stick_x * .3);
                 driveBackRight.setPower(gamepad1.right_stick_x * .3);
             }
-
-            driveBackLeft.setPower(gamepad1.left_stick_y * .8 + gamepad1.left_stick_x * .8);
-            driveFrontLeft.setPower(gamepad1.left_stick_y * .8 + gamepad1.left_stick_x * -.8);
-            driveFrontRight.setPower(gamepad1.left_stick_y * .8 + gamepad1.left_stick_x * .8);
-            driveBackRight.setPower(gamepad1.left_stick_y * .8 + gamepad1.left_stick_x * -.8);
+            if(gamepad1.a){
+                driveBackLeft.setPower(-.3);
+                driveFrontLeft.setPower(.3);
+                driveBackRight.setPower(.3);
+                driveFrontRight.setPower(-.3);
+            }
+            driveBackLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x * -1);
+            driveFrontLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x );
+            driveFrontRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x*-1);
+            driveBackRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
             // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
-            driveFrontLeft.setPower(gamepad1.right_stick_x * -.8);
-            driveBackLeft.setPower(gamepad1.right_stick_x * -.8);
-            driveFrontRight.setPower(gamepad1.right_stick_x * .8);
-            driveBackRight.setPower(gamepad1.right_stick_x * .8);
+            driveFrontLeft.setPower(gamepad1.right_stick_x * -1);
+            driveBackLeft.setPower(gamepad1.right_stick_x * -1);
+            driveFrontRight.setPower(gamepad1.right_stick_x);
+            driveBackRight.setPower(gamepad1.right_stick_x);
+
             if (gamepad2.right_bumper) {
                 clamp.setPosition(.68);
             }
@@ -177,9 +174,15 @@ public class Teleop extends LinearOpMode {
             }else if(limitSwitch.getState() == false) {
                 liftright.setPower(0);
                 liftleft.setPower(0);
-            }else {
+            }else if(toggle == true){
                 liftright.setPower(0.16);
                 liftleft.setPower(0.16);
+            }else if(toggle == false){
+                liftright.setPower(0);
+                liftleft.setPower(0);
+            }
+            if (gamepad2.y){
+                 toggle = !toggle;
             }
 
 
