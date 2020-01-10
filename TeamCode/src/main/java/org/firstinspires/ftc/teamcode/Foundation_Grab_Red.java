@@ -15,11 +15,11 @@ public class Foundation_Grab_Red extends Auto_Methods {
         if (opModeIsActive() && !isStopRequested()) {
             strafeDriveEncoder(.7,19,"RIGHT");
             straightDriveEncoder(.3,120,0);
-            leftFoundation.setPosition(1);
+            leftFoundation.setPosition(1);// TODO replace with method foundationClamps
             rightFoundation.setPosition(0.15);
             sleep(1500);
             straightDriveEncoder(.3,-130,0);
-            leftFoundation.setPosition(0);
+            leftFoundation.setPosition(0);// TODO replace with method foundationClamps
             rightFoundation.setPosition(1);
             sleep(1500);
             strafeDriveEncoder(.8,100,"LEFT");

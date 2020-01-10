@@ -43,12 +43,14 @@ public abstract class Auto_Methods extends LinearOpMode {
     public DigitalChannel limitSwitch;
 
     // Gobilda Motor Specs
-    double COUNTS_PER_MOTOR_REV = 537.5;    // gobilda
+    double COUNTS_PER_MOTOR_GOBUILDA = 537.5;    // gobilda
     double DRIVE_GEAR_REDUCTION = 1;    // 1:1
-    double WHEEL_DIAMETER_CM = 11;     // mecanum wheels
+    double WHEEL_DIAMETER_CM = 10;     // mecanum wheels
     double TUNING_DRIVE = 1.1;
     double ROBOT_RADIUS_CM = 29;
-    double COUNTS_PER_CM_GOBUILDA = ((COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION * TUNING_DRIVE) / (WHEEL_DIAMETER_CM * Math.PI)) / 2;
+    double COUNTS_PER_CM_GOBUILDA = ((COUNTS_PER_MOTOR_GOBUILDA * DRIVE_GEAR_REDUCTION * TUNING_DRIVE) / (WHEEL_DIAMETER_CM * Math.PI)) / 2;
+    int rpm = 1;// TODO need to change
+    double resistance = 0.75;// TODO need to change
 
     public void initialize() {
 
@@ -228,7 +230,7 @@ public abstract class Auto_Methods extends LinearOpMode {
             driveBackRight.setPower(Math.abs(speed));
 
             t = getRuntime();
-            end = (Math.abs(distanceCM) / 10.16) / (speed / 0.1) + getRuntime() - custom;
+            end = ((Math.abs(distanceCM)/WHEEL_DIAMETER_CM)/(rpm*resistance))*60*(2-speed) + getRuntime();// TODO this needs to be tested
 
             while (opModeIsActive() && !isStopRequested() &&
                     (getRuntime() <= end) &&
@@ -261,24 +263,25 @@ public abstract class Auto_Methods extends LinearOpMode {
             driveBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         }
-    }
+    }// TODO test this
 
     // Drives the robot left or right for a given speed and distance according to the encoder
-    public void strafeDriveEncoder(double speed, double distance, String direction) {
+    public void strafeDriveEncoder(double speed, double distanceCM, String direction) {
         int frontLeftTarget = 0;
         int backLeftTarget = 0;
         int frontRightTarget = 0;
         int backRightTarget = 0;
         double end = 0;
         double t = 0;
+        double distancePerRotation = 1;// TODO this needs to be found
 
         switch (direction) {
             case "LEFT":
                 // Determine new target position, and pass to motor controller
-                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -1.8);
-                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * 1.8);
-                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * 1.8);
-                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -1.8);
+                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA * -1.8);
+                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA * 1.8);
+                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA * 1.8);
+                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA * -1.8);
 
 
                 // set target position to each motor
@@ -293,6 +296,7 @@ public abstract class Auto_Methods extends LinearOpMode {
                 driveBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 driveBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+                //TODO NOT A PERMENANT SOLUTION - THIS IS MENT TO ACCOUNT FOR DRIFT IN THE MECCANUM DRIVE
                 driveFrontLeft.setPower(Math.abs(speed) * 0.8);
                 driveFrontRight.setPower(Math.abs(speed) * 1);
                 driveBackLeft.setPower(Math.abs(speed) * 1);
@@ -301,11 +305,10 @@ public abstract class Auto_Methods extends LinearOpMode {
                 break;
             case "RIGHT":
                 // Determine new target position, and pass to motor controller
-                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * 1.8);
-                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -1.8);
-                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * -1.8);
-                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distance * COUNTS_PER_CM_GOBUILDA * 1.8);
-
+                frontLeftTarget = driveFrontLeft.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA * 1.8);
+                frontRightTarget = driveFrontRight.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA * -1.8);
+                backLeftTarget = driveBackLeft.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA * -1.8);
+                backRightTarget = driveBackRight.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA * 1.8);
 
                 // set target position to each motor
                 driveFrontLeft.setTargetPosition(frontLeftTarget);
@@ -319,6 +322,7 @@ public abstract class Auto_Methods extends LinearOpMode {
                 driveBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 driveBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+                //TODO NOT A PERMENANT SOLUTION - THIS IS MENT TO ACCOUNT FOR DRIFT IN THE MECCANUM DRIVE
                 driveFrontLeft.setPower(Math.abs(speed) * 1);// Change this if you want the robot to strafe more backwards
                 driveFrontRight.setPower(Math.abs(speed) * 1);// Change this if you want the robot to strafe more forwards
                 driveBackLeft.setPower(Math.abs(speed) * 1);// Change this if you want the robot to strafe more forwards
@@ -327,9 +331,8 @@ public abstract class Auto_Methods extends LinearOpMode {
         }
         if (opModeIsActive()) {
 
-
             t = getRuntime();
-            end = (Math.abs(distance) / 26.54) / (speed / 0.7) + getRuntime();
+            end = (Math.abs(distanceCM)/distancePerRotation)*60*(2-speed) + getRuntime();// TODO this needs to be tested
 
             while (opModeIsActive() && !isStopRequested() &&
                     (getRuntime() <= end) &&
@@ -363,9 +366,9 @@ public abstract class Auto_Methods extends LinearOpMode {
 
         }
 
-    }
+    }// TODO test this
 
-    // Turns the robot clockwise(c) or countr-clockwise(cc) for a given speed and degree according to the encoder
+    // Turns the robot clockwise(c) or counter-clockwise(cc) for a given speed and degree according to the encoder
     public void turnEncoder(double speed, double turnDegrees, String direction) {
         double tuning = 1.46;
         double distance = ROBOT_RADIUS_CM * tuning * (((turnDegrees) * (Math.PI)) / (180)); // Using arc length formula
@@ -418,15 +421,8 @@ public abstract class Auto_Methods extends LinearOpMode {
             driveBackLeft.setPower(speed);
             driveBackRight.setPower(speed);
 
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-
             t = getRuntime();
-            end = (Math.abs(turnDegrees) / 10.16) / (speed / 0.05) + getRuntime();
+            end = ((Math.abs(distance)/WHEEL_DIAMETER_CM)/(rpm*resistance))*60*(2-speed) + getRuntime();// TODO this needs to be tested
 
             while (opModeIsActive() &&
                     (getRuntime() <= end) &&
@@ -460,9 +456,9 @@ public abstract class Auto_Methods extends LinearOpMode {
         }
         //telemetrySender("DEGREES CURRENT: ", "" + getCurrentHeading(), "");
         //telemetrySender("DEGREES FINAL: ", "" + (getCurrentHeading() + headingStart), "");
-    }
+    }// TODO test this
 
-    public void clamp(String position) {
+    public void clamp(String position, int sleep) {
         switch (position) {
             case "OPEN":
                 clamp.setPosition(1);
@@ -474,9 +470,10 @@ public abstract class Auto_Methods extends LinearOpMode {
                 clamp.setPosition(.8);
                 break;
         }
+        sleep(sleep);// This is to allow time for the servo to move
     }
 
-    public void foundationClamps(String state) {
+    public void foundationClamps(String state, int sleep) {
         switch (state) {
             case "DOWN":
                 leftFoundation.setPosition(1);
@@ -487,10 +484,10 @@ public abstract class Auto_Methods extends LinearOpMode {
                 rightFoundation.setPosition(1);
                 break;
         }
-        sleep(200);
-    }
+        sleep(sleep);// This is to allow time for the servo to move
+    }// TODO test this
 
-    public void turnClamp(String state) {
+    public void turnClamp(String state, int sleep) {
         switch (state) {
             case "PERP":
                 rotation.setPosition(0.8);
@@ -499,8 +496,112 @@ public abstract class Auto_Methods extends LinearOpMode {
                 rotation.setPosition(0.4);
                 break;
         }
-    }// TODO Make sure this is correct
+        sleep(sleep);// This is to allow time for the servo to move
+    }
 
+    public void actuatorDistance(int distanceCM, double speed){
+        int actuatorTarget;
+        double tuner = 1;// TODO change this if distanceCM doesnt correspond to actuator distance
+        double end = 0;
+        double t = 0;
+
+        if (opModeIsActive()) {
+
+            actuator.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+            // Determine new target position, and pass to motor controller
+            actuatorTarget = actuator.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA * tuner);
+
+            // set target position to each motor
+            actuator.setTargetPosition(actuatorTarget);
+
+            // Turn on run to position
+            actuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            actuator.setPower(Math.abs(speed));
+
+            t = getRuntime();
+            end = (Math.abs(distanceCM) / 10.16) / (speed / 0.1) + getRuntime();// TODO this needs to be corrected
+
+            while (opModeIsActive() && !isStopRequested() &&
+                    (getRuntime() <= end) &&
+                    (actuator.isBusy() )) {
+
+                // Display it for the driver.
+                telemetry.addData("RUN TIME CURRENT: ", "" + getRuntime());
+                telemetry.addData("RUN TIME END: ", "" + end);
+                telemetry.addData("ACTUATOR MOTOR", " DRIVING TO: %7d CURRENTLY AT: %7d", actuatorTarget, actuator.getCurrentPosition());
+                telemetry.update();
+            }
+
+            telemetry.clearAll();
+            telemetry.addData("FINISHED RUN: ", "" + (end - t));
+            telemetry.update();
+
+            // Stop all motion;
+            actuator.setPower(0);
+
+            //Turn off run to position
+            actuator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }// TODO test this
+
+    public void liftDistance(int distanceCM, double speed){
+        int leftLiftTarget;
+        int rightLiftTarget;
+        double tune = 1;// TODO change this
+        double end = 0;
+        double t = 0;
+
+        if (opModeIsActive()) {
+
+            liftleft.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            liftright.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+            // Determine new target position, and pass to motor controller
+            leftLiftTarget = liftleft.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA * tune);
+            rightLiftTarget = liftright.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA* tune);
+
+            // set target position to each motor
+            liftleft.setTargetPosition(leftLiftTarget);
+            liftright.setTargetPosition(rightLiftTarget);
+
+            // Turn on run to position
+            liftleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            liftright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            liftleft.setPower(Math.abs(speed));
+            liftright.setPower(Math.abs(speed));
+
+            t = getRuntime();
+            end = (Math.abs(distanceCM) / 10.16) / (speed / 0.1) + getRuntime();// TODO this needs to be corrected
+
+            while (opModeIsActive() && !isStopRequested() &&
+                    (getRuntime() <= end) &&
+                    (liftleft.isBusy() || liftright.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("RUN TIME CURRENT: ", "" + getRuntime());
+                telemetry.addData("RUN TIME END: ", "" + end);
+                telemetry.addData("LEFT MOTOR", " DRIVING TO: %7d CURRENTLY AT: %7d", leftLiftTarget, liftleft.getCurrentPosition());
+                telemetry.addData("RIGHT MOTOR", "DRIVING TO: %7d CURRENTLY AT: %7d", rightLiftTarget, liftright.getCurrentPosition());
+                telemetry.update();
+            }
+
+            telemetry.clearAll();
+            telemetry.addData("FINISHED RUN: ", "" + (end - t));
+            telemetry.update();
+
+            // Stop all motion;
+            liftleft.setPower(0);
+            liftright.setPower(0);
+
+            //Turn off run to position
+            liftleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            liftright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        }
+    }// TODO test this
 
     @Override
     public void runOpMode() throws InterruptedException {

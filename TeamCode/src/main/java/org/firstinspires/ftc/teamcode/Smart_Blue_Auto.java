@@ -13,8 +13,8 @@ public class Smart_Blue_Auto extends Auto_Methods {
         waitForStart();
 
         if (opModeIsActive() && !isStopRequested()) {
-            turnClamp("PAR");
-            clamp("OPEN");
+            turnClamp("PAR", 250);
+            clamp("OPEN", 250);
             straightDriveEncoder(0.2, 106, 3);
             skystoneColorScan("BLUE");
             telemetry.addLine("Skystone position: " + positionSkystone);
@@ -22,17 +22,17 @@ public class Smart_Blue_Auto extends Auto_Methods {
             switch (positionSkystone) {
                 case "WALL":
                     if (!isStopRequested() && opModeIsActive()) {
-                        straightDriveEncoder(.2,-9,0);
-                        strafeDriveEncoder(1,15,"RIGHT");
-                        actuator.setPower(1);
+                        straightDriveEncoder(.2, -9, 0);
+                        strafeDriveEncoder(1, 15, "RIGHT");
+                        actuator.setPower(1);//TODO use method created
                         sleep(400);
                         actuator.setPower(0);
-                        clamp("CLOSE");
+                        clamp("CLOSE", 250);
                         straightDriveEncoder(0.2, -30, 1);
-                        turnEncoder(.4,95,"CC");
+                        turnEncoder(.4, 95, "CC");
                         straightDriveEncoder(0.6, 200, 1);
-                        clamp("OPEN");
-                        straightDriveEncoder(.5,-65,0);
+                        clamp("OPEN", 250);
+                        straightDriveEncoder(.5, -65, 0);
 //                        turnEncoder(.4,95,"CC");
 //                        straightDriveEncoder(0.2, 30, 1.5);
 //                        straightDriveEncoder(0.2, 106, 3);
@@ -45,42 +45,39 @@ public class Smart_Blue_Auto extends Auto_Methods {
 //                        turnEncoder(.4,95,"C");
 //                        straightDriveEncoder(0.6, 200, 1);
 //                        clamp("OPEN");
-
                     }
                     break;
                 case "MIDDLE":
                     if (!isStopRequested() && opModeIsActive()) {
-                        strafeDriveEncoder(1,15,"LEFT");
-                        actuator.setPower(1);//TODO FIX THIS
+                        strafeDriveEncoder(1, 15, "LEFT");
+                        actuator.setPower(1);//TODO use method created
                         sleep(300);
                         actuator.setPower(0);
-                        clamp("CLOSE");
+                        clamp("CLOSE", 250);
                         straightDriveEncoder(0.2, -30, 1);
-                        turnEncoder(.4,95,"CC");
+                        turnEncoder(.4, 95, "CC");
                         straightDriveEncoder(0.6, 170, 0);
-                        clamp("OPEN");
-                        straightDriveEncoder(.5,-65,0);
+                        clamp("OPEN", 250);
+                        straightDriveEncoder(.5, -65, 0);
                     }
                     break;
                 case "BRIDGE":
                     if (!isStopRequested() && opModeIsActive()) {
-                        straightDriveEncoder(.2,-9,0);
-                        strafeDriveEncoder(1,35,"LEFT");     //TODO FIX THIS
-                        actuator.setPower(1);//TODO FIX THIS
+                        straightDriveEncoder(.2, -9, 0);
+                        strafeDriveEncoder(1, 35, "LEFT");
+                        actuator.setPower(1);//TODO use method created
                         sleep(300);
                         actuator.setPower(0);
-                        clamp("CLOSE");
+                        clamp("CLOSE", 250);
                         straightDriveEncoder(0.2, -30, 1.5);
-                        turnEncoder(.4,95,"CC");
+                        turnEncoder(.4, 95, "CC");
                         straightDriveEncoder(0.2, 150, 3);
-                        clamp("OPEN");
-                        straightDriveEncoder(.5,-40,0);
+                        clamp("OPEN", 250);
+                        straightDriveEncoder(.5, -40, 0);
                     }
                     break;
 
             }
-
-
 //            liftleft.setPower(-1);
 //            liftleft.setPower(-1);
 //            sleep(700);
@@ -88,11 +85,6 @@ public class Smart_Blue_Auto extends Auto_Methods {
 //            liftleft.setPower(-0.16);
 //            strafeDriveEncoder(.5,50,"LEFT");
 //            straightDriveEncoder(.3,20,0);
-
-
-
-            // DELIVER SKYSTONE TO BUILDZONE
-            // ETC
         }
     }
 }
