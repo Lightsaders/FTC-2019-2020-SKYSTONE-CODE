@@ -13,7 +13,7 @@ public class Foundation_Grab_Red extends Auto_Methods {
         waitForStart();
 
         if (opModeIsActive() && !isStopRequested()) {
-            strafeDriveEncoder(.7,19,"RIGHT");
+            strafeDriveEncoder(.7,19,"RIGHT",3);
             straightDriveEncoder(.3,120,0);
             leftFoundation.setPosition(1);// TODO replace with method foundationClamps
             rightFoundation.setPosition(0.15);
@@ -22,7 +22,7 @@ public class Foundation_Grab_Red extends Auto_Methods {
             leftFoundation.setPosition(0);// TODO replace with method foundationClamps
             rightFoundation.setPosition(1);
             sleep(1500);
-            strafeDriveEncoder(.8,100,"LEFT");
+            strafeDriveEncoder(.8,100,"LEFT",3);
         }
     }
 }

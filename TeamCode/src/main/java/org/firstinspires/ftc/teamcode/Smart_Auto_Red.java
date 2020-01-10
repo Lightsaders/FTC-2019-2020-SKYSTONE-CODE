@@ -23,13 +23,13 @@ public class Smart_Auto_Red extends Auto_Methods {
                 case "WALL":
                     if (!isStopRequested() && opModeIsActive()) {
                         straightDriveEncoder(.2, -9, 0);
-                        strafeDriveEncoder(1, 15, "LEFT");
+                        strafeDriveEncoder(1, 15, "LEFT",3);
                         actuator.setPower(1);//TODO use method created
                         sleep(400);
                         actuator.setPower(0);
                         clamp("CLOSE", 250);
                         straightDriveEncoder(0.2, -30, 1);
-                        turnEncoder(.4, 95, "C");
+                        turnEncoder(.4, 95, "C",3);
                         straightDriveEncoder(0.6, 200, 1);
                         clamp("OPEN", 250);
                         straightDriveEncoder(.5, -65, 1);
@@ -49,13 +49,13 @@ public class Smart_Auto_Red extends Auto_Methods {
                     break;
                 case "MIDDLE":
                     if (!isStopRequested() && opModeIsActive()) {
-                        strafeDriveEncoder(1, 15, "RIGHT");
+                        strafeDriveEncoder(1, 15, "RIGHT",3);
                         actuator.setPower(1);//TODO use method created
                         sleep(300);
                         actuator.setPower(0);
                         clamp("CLOSE", 250);
                         straightDriveEncoder(0.2, -30, 1);
-                        turnEncoder(.4, 95, "C");
+                        turnEncoder(.4, 95, "C",3);
                         straightDriveEncoder(0.6, 170, 0);
                         clamp("OPEN", 250);
                         straightDriveEncoder(.5, -65, 1);
@@ -63,13 +63,13 @@ public class Smart_Auto_Red extends Auto_Methods {
                     break;
                 case "BRIDGE":
                     if (!isStopRequested() && opModeIsActive()) {
-                        strafeDriveEncoder(1, 35, "RIGHT");
+                        strafeDriveEncoder(1, 35, "RIGHT",3);
                         actuator.setPower(1);//TODO use method created
                         sleep(300);
                         actuator.setPower(0);
                         clamp("CLOSE", 250);
                         straightDriveEncoder(0.2, -30, 1.5);
-                        turnEncoder(.4, 95, "C");
+                        turnEncoder(.4, 95, "C",3);
                         straightDriveEncoder(0.2, 150, 3);
                         clamp("OPEN", 250);
                         straightDriveEncoder(.5, -40, 0);

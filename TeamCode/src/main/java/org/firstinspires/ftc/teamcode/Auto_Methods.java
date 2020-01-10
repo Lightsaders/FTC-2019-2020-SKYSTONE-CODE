@@ -49,8 +49,8 @@ public abstract class Auto_Methods extends LinearOpMode {
     double TUNING_DRIVE = 1.1;
     double ROBOT_RADIUS_CM = 29;
     double COUNTS_PER_CM_GOBUILDA = ((COUNTS_PER_MOTOR_GOBUILDA * DRIVE_GEAR_REDUCTION * TUNING_DRIVE) / (WHEEL_DIAMETER_CM * Math.PI)) / 2;
-    int rpm = 1;// TODO need to change
-    double resistance = 0.75;// TODO need to change
+    int rpm = 435;
+    double resistance = 0.9;// TODO need to change
 
     public void initialize() {
 
@@ -230,7 +230,8 @@ public abstract class Auto_Methods extends LinearOpMode {
             driveBackRight.setPower(Math.abs(speed));
 
             t = getRuntime();
-            end = ((Math.abs(distanceCM)/WHEEL_DIAMETER_CM)/(rpm*resistance))*60*(2-speed) + getRuntime();// TODO this needs to be tested
+//            end = ((Math.abs(distanceCM)/WHEEL_DIAMETER_CM)/(rpm*resistance))*60*(2-speed) + getRuntime();// TODO this needs to be tested
+            end = getRuntime() + custom;
 
             while (opModeIsActive() && !isStopRequested() &&
                     (getRuntime() <= end) &&
@@ -266,7 +267,7 @@ public abstract class Auto_Methods extends LinearOpMode {
     }// TODO test this
 
     // Drives the robot left or right for a given speed and distance according to the encoder
-    public void strafeDriveEncoder(double speed, double distanceCM, String direction) {
+    public void strafeDriveEncoder(double speed, double distanceCM, String direction, int custom) {
         int frontLeftTarget = 0;
         int backLeftTarget = 0;
         int frontRightTarget = 0;
@@ -332,7 +333,8 @@ public abstract class Auto_Methods extends LinearOpMode {
         if (opModeIsActive()) {
 
             t = getRuntime();
-            end = (Math.abs(distanceCM)/distancePerRotation)*60*(2-speed) + getRuntime();// TODO this needs to be tested
+//            end = (Math.abs(distanceCM)/distancePerRotation)*60*(2-speed) + getRuntime();// TODO this needs to be tested
+            end = custom + getRuntime();
 
             while (opModeIsActive() && !isStopRequested() &&
                     (getRuntime() <= end) &&
@@ -369,7 +371,7 @@ public abstract class Auto_Methods extends LinearOpMode {
     }// TODO test this
 
     // Turns the robot clockwise(c) or counter-clockwise(cc) for a given speed and degree according to the encoder
-    public void turnEncoder(double speed, double turnDegrees, String direction) {
+    public void turnEncoder(double speed, double turnDegrees, String direction, int custom) {
         double tuning = 1.46;
         double distance = ROBOT_RADIUS_CM * tuning * (((turnDegrees) * (Math.PI)) / (180)); // Using arc length formula
         int frontLeftTarget = 0;
@@ -422,7 +424,8 @@ public abstract class Auto_Methods extends LinearOpMode {
             driveBackRight.setPower(speed);
 
             t = getRuntime();
-            end = ((Math.abs(distance)/WHEEL_DIAMETER_CM)/(rpm*resistance))*60*(2-speed) + getRuntime();// TODO this needs to be tested
+//            end = ((Math.abs(distance)/WHEEL_DIAMETER_CM)/(rpm*resistance))*60*(2-speed) + getRuntime();// TODO this needs to be tested
+            end = getRuntime() + custom;
 
             while (opModeIsActive() &&
                     (getRuntime() <= end) &&
@@ -480,7 +483,7 @@ public abstract class Auto_Methods extends LinearOpMode {
                 rightFoundation.setPosition(0.15);
                 break;
             case "UP":
-                leftFoundation.setPosition(0);
+                leftFoundation.setPosition(0.2);
                 rightFoundation.setPosition(1);
                 break;
         }
