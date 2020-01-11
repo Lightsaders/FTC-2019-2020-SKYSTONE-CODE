@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "Teleop_2", group = "TeleOp")
+@TeleOp(name = "TeleOp", group = "TeleOp")
 public class Teleop_2 extends LinearOpMode {
 
     private DcMotor driveFrontLeft;

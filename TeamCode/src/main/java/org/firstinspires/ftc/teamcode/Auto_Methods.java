@@ -267,7 +267,7 @@ public abstract class Auto_Methods extends LinearOpMode {
     }// TODO test this
 
     // Drives the robot left or right for a given speed and distance according to the encoder
-    public void strafeDriveEncoder(double speed, double distanceCM, String direction, int custom) {
+    public void strafeDriveEncoder(double speed, double distanceCM, String direction, double custom) {
         int frontLeftTarget = 0;
         int backLeftTarget = 0;
         int frontRightTarget = 0;
@@ -371,7 +371,7 @@ public abstract class Auto_Methods extends LinearOpMode {
     }// TODO test this
 
     // Turns the robot clockwise(c) or counter-clockwise(cc) for a given speed and degree according to the encoder
-    public void turnEncoder(double speed, double turnDegrees, String direction, int custom) {
+    public void turnEncoder(double speed, double turnDegrees, String direction, double custom) {
         double tuning = 1.46;
         double distance = ROBOT_RADIUS_CM * tuning * (((turnDegrees) * (Math.PI)) / (180)); // Using arc length formula
         int frontLeftTarget = 0;
@@ -467,7 +467,7 @@ public abstract class Auto_Methods extends LinearOpMode {
                 clamp.setPosition(1);
                 break;
             case "CLOSE":
-                clamp.setPosition(.5);
+                clamp.setPosition(.45);
                 break;
             case "SEMI OPEN":
                 clamp.setPosition(.8);
@@ -493,10 +493,10 @@ public abstract class Auto_Methods extends LinearOpMode {
     public void turnClamp(String state, int sleep) {
         switch (state) {
             case "PERP":
-                rotation.setPosition(0.8);
+                rotation.setPosition(0.58);
                 break;
             case "PAR":
-                rotation.setPosition(0.4);
+                rotation.setPosition(.93);
                 break;
         }
         sleep(sleep);// This is to allow time for the servo to move
