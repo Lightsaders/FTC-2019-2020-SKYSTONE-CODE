@@ -13,12 +13,16 @@ public class BLUE_Foundation_Grab extends Auto_Methods {
         waitForStart();
 
         if (opModeIsActive() && !isStopRequested()) {
-            strafeDriveEncoder(.7,19,"LEFT",.75);
+            strafeDriveEncoder(.7,29,"LEFT",.75);
             straightDriveEncoder(.3,120,2);
-            foundationClamps("DOWN",1400);
-            straightDriveEncoder(.3,-130,2);
-            foundationClamps("UP",1400);
-            strafeDriveEncoder(.5,100,"RIGHT",3.5);
+            leftFoundation.setPosition(0.9);
+            rightFoundation.setPosition(0.15);
+            sleep(1500);
+            straightDriveEncoder(.4,-160,2);
+            leftFoundation.setPosition(0.2);
+            rightFoundation.setPosition(1);
+            sleep(1500);
+            strafeDriveEncoder(.5,110,"RIGHT",3.5);
         }
         }
 }

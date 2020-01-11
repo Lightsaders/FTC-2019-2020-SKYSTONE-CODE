@@ -27,7 +27,7 @@ public class BLUE_2_Block extends Auto_Methods {
                         turnEncoder(0.5, 88, "CC", 1);
                         straightDriveEncoder(0.7, 190, 1.75);
                         clamp("OPEN", 250);
-                        straightDriveEncoder(0.7, -210, 2);
+                        straightDriveEncoder(0.7, -217, 2);
                         turnEncoder(0.5, 168, "CC", 1.75);
                         strafeDriveEncoder(0.5, 50, "LEFT", 2);
                         straightDriveEncoder(0.4, -10, 0.5);
@@ -40,7 +40,7 @@ public class BLUE_2_Block extends Auto_Methods {
                         turnEncoder(0.5, 166, "CC", 1.75);
                         straightDriveEncoder(0.7, 260, 2);
                         clamp("OPEN", 250);
-                        straightDriveEncoder(0.4, -20, 1);
+                        straightDriveEncoder(0.4, -40, 1);
                     }
                     break;
                 case "MIDDLE":
@@ -55,7 +55,7 @@ public class BLUE_2_Block extends Auto_Methods {
                         turnEncoder(0.5, 86, "CC", 1);
                         straightDriveEncoder(0.7, 160, 2.25);
                         clamp("OPEN", 250);
-                        straightDriveEncoder(0.7, -230, 2.5);
+                        straightDriveEncoder(0.7, -235, 2.5);
                         turnEncoder(0.5, 87, "C", 1);
                         clamp("OPEN", 250);
                         straightDriveEncoder(0.4, 40, 1.75);
@@ -66,7 +66,7 @@ public class BLUE_2_Block extends Auto_Methods {
                         turnClamp("PERP", 250);
                         straightDriveEncoder(.7, 18, 1.5);
                         clamp("OPEN", 250);
-                        straightDriveEncoder(.7, -20, 1.5);
+                        straightDriveEncoder(.7, -40, 1.5);
                     }
                     break;
                 case "BRIDGE":
@@ -90,7 +90,7 @@ public class BLUE_2_Block extends Auto_Methods {
                         turnEncoder(0.5, 85, "CC", 1);
                         straightDriveEncoder(0.7, 220, 2);
                         clamp("OPEN", 250);
-                        straightDriveEncoder(0.4, -25, 1.75);
+                        straightDriveEncoder(0.4, -45, 1.75);
                     }
                     break;
             }

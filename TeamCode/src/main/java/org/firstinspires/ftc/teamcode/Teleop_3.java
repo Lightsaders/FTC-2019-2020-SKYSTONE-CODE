@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,8 +10,9 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "TeleOp", group = "TeleOp")
-public class Teleop_2 extends LinearOpMode {
+@TeleOp(name = "TeleOp_Rylan", group = "TeleOp")
+@Disabled
+public class Teleop_3 extends LinearOpMode {
 
     private DcMotor driveFrontLeft;
     private DcMotor driveFrontRight;
@@ -63,34 +65,19 @@ public class Teleop_2 extends LinearOpMode {
             rightFoundation.setPosition(1);
 
             //Gamepad 1 left joystick x strafe
-            while(Math.abs(gamepad1.left_stick_x) > 0.1 && opModeIsActive()) {
-                driveFrontLeft.setPower(gamepad1.left_stick_x*-0.75);
-                driveBackLeft.setPower(gamepad1.left_stick_x * 0.75);
-                driveFrontRight.setPower(gamepad1.left_stick_x * 0.75);
-                driveBackRight.setPower(gamepad1.left_stick_x*-0.75);
-            }
-
-            //Gamepad 1 right joystick y straight
-            while(Math.abs(gamepad1.right_stick_y) > 0.1&& opModeIsActive()) {
-                driveBackLeft.setPower(gamepad1.right_stick_y*0.75);
-                driveFrontLeft.setPower(gamepad1.right_stick_y*0.75);
-                driveFrontRight.setPower(gamepad1.right_stick_y*0.75);
-                driveBackRight.setPower(gamepad1.right_stick_y*0.75);
+            while((Math.abs(gamepad1.left_stick_x) > 0.1  || Math.abs(gamepad1.left_stick_y) > 0.1 )&& opModeIsActive()) {
+                driveFrontLeft.setPower(gamepad1.left_stick_x*-0.75+gamepad1.right_stick_y*0.75);
+                driveBackLeft.setPower(gamepad1.left_stick_x * 0.75+gamepad1.right_stick_y*0.75);
+                driveFrontRight.setPower(gamepad1.left_stick_x * 0.75+gamepad1.right_stick_y*0.75);
+                driveBackRight.setPower(gamepad1.left_stick_x*-0.75+gamepad1.right_stick_y*0.75);
             }
 
             // Gamepad 1 triggers for turning
-            while(Math.abs(gamepad1.right_trigger) > 0.1&& opModeIsActive()) {
+            while(Math.abs(gamepad1.right_stick_x) > 0.1&& opModeIsActive()) {
                 driveBackLeft.setPower(gamepad1.right_trigger * -0.5);
                 driveFrontLeft.setPower(gamepad1.right_trigger * -0.5);
                 driveFrontRight.setPower(gamepad1.right_trigger*0.5);
                 driveBackRight.setPower(gamepad1.right_trigger*0.5);
-            }
-
-            while(Math.abs(gamepad1.left_trigger) > 0.1&& opModeIsActive()) {
-                driveBackLeft.setPower(gamepad1.left_trigger*0.5);
-                driveFrontLeft.setPower(gamepad1.left_trigger*0.5);
-                driveFrontRight.setPower(gamepad1.left_trigger *-0.5);
-                driveBackRight.setPower(gamepad1.left_trigger *-0.5);
             }
 
             driveBackLeft.setPower(0);

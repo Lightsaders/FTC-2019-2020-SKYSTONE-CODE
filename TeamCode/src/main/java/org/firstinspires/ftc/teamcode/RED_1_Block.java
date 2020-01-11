@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-@Autonomous(name = "RED_1_Block")// TODO as of right now this only grabs one block however I dont think its unreasonable to grab both Skystones provided the robot can physically grab them
+@Autonomous(name = "RED_1_Block")
+@Disabled
 public class RED_1_Block extends Auto_Methods {
 
     @Override
@@ -22,7 +24,7 @@ public class RED_1_Block extends Auto_Methods {
             switch (positionSkystone) {
                 case "WALL":
                     if (!isStopRequested() && opModeIsActive()) {
-                        straightDriveEncoder(.2, -9, 0);
+                        straightDriveEncoder(.2, -9, 1.5);
                         strafeDriveEncoder(1, 15, "LEFT",3);
                         actuator.setPower(1);//TODO use method created
                         sleep(400);
@@ -44,7 +46,7 @@ public class RED_1_Block extends Auto_Methods {
                         clamp("CLOSE", 250);
                         straightDriveEncoder(0.2, -30, 1);
                         turnEncoder(.4, 95, "C",3);
-                        straightDriveEncoder(0.6, 170, 0);
+                        straightDriveEncoder(0.6, 170, 1.5);
                         clamp("OPEN", 250);
                         straightDriveEncoder(.5, -65, 1);
                     }
@@ -60,7 +62,7 @@ public class RED_1_Block extends Auto_Methods {
                         turnEncoder(.4, 95, "C",3);
                         straightDriveEncoder(0.2, 150, 3);
                         clamp("OPEN", 250);
-                        straightDriveEncoder(.5, -40, 0);
+                        straightDriveEncoder(.5, -40, 1);
                     }
                     break;
             }
