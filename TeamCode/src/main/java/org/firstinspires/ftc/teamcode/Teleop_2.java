@@ -102,17 +102,17 @@ public class Teleop_2 extends LinearOpMode {
                 clamp.setPosition(.45);
             }
             if (gamepad2.left_bumper&& opModeIsActive()) {
-                clamp.setPosition(1);
+                clamp.setPosition(.75);
             }
 
             actuator.setPower(gamepad2.right_trigger);
             actuator.setPower(gamepad2.left_trigger * -1);
 
             if (gamepad2.dpad_left&& opModeIsActive()) {
-                rotation.setPosition(.58);
+                rotation.setPosition(.21);
             }
             if (gamepad2.dpad_right&& opModeIsActive()) {
-                rotation.setPosition(.93);
+                rotation.setPosition(.68);
             }
 
 
