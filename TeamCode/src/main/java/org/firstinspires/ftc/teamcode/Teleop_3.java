@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "TeleOp_Rylan", group = "TeleOp")
-@Disabled
+
 public class Teleop_3 extends LinearOpMode {
 
     private DcMotor driveFrontLeft;
@@ -66,18 +66,18 @@ public class Teleop_3 extends LinearOpMode {
 
             //Gamepad 1 left joystick x strafe
             while((Math.abs(gamepad1.left_stick_x) > 0.1  || Math.abs(gamepad1.left_stick_y) > 0.1 )&& opModeIsActive()) {
-                driveFrontLeft.setPower(gamepad1.left_stick_x*-0.75+gamepad1.right_stick_y*0.75);
-                driveBackLeft.setPower(gamepad1.left_stick_x * 0.75+gamepad1.right_stick_y*0.75);
-                driveFrontRight.setPower(gamepad1.left_stick_x * 0.75+gamepad1.right_stick_y*0.75);
-                driveBackRight.setPower(gamepad1.left_stick_x*-0.75+gamepad1.right_stick_y*0.75);
+                driveBackLeft.setPower(gamepad1.left_stick_y * .8 + gamepad1.left_stick_x * .8);
+                driveFrontLeft.setPower(gamepad1.left_stick_y * .8 + gamepad1.left_stick_x * -.8);
+                driveFrontRight.setPower(gamepad1.left_stick_y * .8 + gamepad1.left_stick_x * .8);
+                driveBackRight.setPower(gamepad1.left_stick_y * .8 + gamepad1.left_stick_x * -.8);
             }
-
             // Gamepad 1 triggers for turning
             while(Math.abs(gamepad1.right_stick_x) > 0.1&& opModeIsActive()) {
-                driveBackLeft.setPower(gamepad1.right_trigger * -0.5);
-                driveFrontLeft.setPower(gamepad1.right_trigger * -0.5);
-                driveFrontRight.setPower(gamepad1.right_trigger*0.5);
-                driveBackRight.setPower(gamepad1.right_trigger*0.5);
+                            driveFrontLeft.setPower(gamepad1.right_stick_x * -.8);
+            driveBackLeft.setPower(gamepad1.right_stick_x * -.8);
+            driveFrontRight.setPower(gamepad1.right_stick_x*.8);
+            driveBackRight.setPower(gamepad1.right_stick_x*.8);
+
             }
 
             driveBackLeft.setPower(0);
