@@ -948,94 +948,40 @@ public abstract class Auto_Methods extends LinearOpMode {
                          double angle,
                          String direction) {
 
-        int frontLeftTarget;
-        int frontRightTarget;
-        int backLeftTarget;
-        int backRightTarget;
-        int moveCounts;
-        double max;
-        double error;
-        double steer;
-        double leftSpeed;
-        double rightSpeed;
-        double tune;
-        tune = 1.22;
-
-
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
             switch (direction) {
                 case "C":
-                    driveFrontLeft.setPower(speed*-1);
-
-                    break;
-                case "RIGHT":
-                    // Set Target and Turn On RUN_TO_POSITION
-                    driveFrontLeft.setTargetPosition(frontLeftTarget);
-                    driveFrontRight.setTargetPosition(frontRightTarget * -1);
-                    driveBackLeft.setTargetPosition(backLeftTarget * -1);
-                    driveBackRight.setTargetPosition(backRightTarget);
-
-                    driveFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    driveFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    driveBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    driveBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                    // start motion.
-                    speed = Range.clip(Math.abs(speed), 0.0, 1.0);
                     driveFrontLeft.setPower(speed);
                     driveFrontRight.setPower(speed * -1);
-                    driveBackLeft.setPower(speed * -1);
+                    driveBackLeft.setPower(speed);
+                    driveBackRight.setPower(speed * -1);
+
+                    while (opModeIsActive() && !isStopRequested() &&
+                            getIntegratedHeading() <= angle) {
+
+                    }
+
+                    break;
+                case "CC":
+                    driveFrontLeft.setPower(speed*-1);
+                    driveFrontRight.setPower(speed);
+                    driveBackLeft.setPower(speed*-1);
                     driveBackRight.setPower(speed);
 
-                    // keep looping while we are still active, and BOTH motors are running.
-                    while (opModeIsActive() &&
-                            (driveFrontLeft.isBusy() && driveFrontRight.isBusy() && driveBackLeft.isBusy() && driveBackRight.isBusy())) {
+                    while (opModeIsActive() && !isStopRequested() &&
+                            getIntegratedHeading() >= angle) {
 
-                        // adjust relative speed based on heading error.
-                        error = getError(angle);
-                        steer = getSteer(error, P_DRIVE_COEFF);
-
-                        rightSpeed = speed - steer;
-                        leftSpeed = -1 * speed + steer;
-
-                        // Normalize speeds if either one exceeds +/- 1.0;
-                        max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
-                        if (max > 1.0) {
-                            leftSpeed /= max;
-                            rightSpeed /= max;
-                        }
-
-                        driveFrontLeft.setPower(leftSpeed);
-                        driveBackLeft.setPower(rightSpeed);
-                        driveFrontRight.setPower(rightSpeed);
-                        driveBackRight.setPower(leftSpeed);
-
-                        // Display drive status for the driver.
-                        telemetry.addData("Err/St", "%5.1f/%5.1f", error, steer);
-                        telemetry.addData("Target", "%7d:%7d:%7d:%7d", frontLeftTarget, frontRightTarget, backLeftTarget, backRightTarget);
-                        telemetry.addData("Actual", "%7d:%7d:%7d:%7d", driveFrontLeft.getCurrentPosition(),
-                                driveFrontRight.getCurrentPosition(), driveBackLeft.getCurrentPosition(), driveBackRight.getCurrentPosition());
-                        telemetry.addData("Speed", "%5.2f:%5.2f", leftSpeed, rightSpeed);
-                        telemetry.update();
                     }
                     break;
             }
         }
-
         // Stop all motion;
         driveFrontLeft.setPower(0);
         driveFrontRight.setPower(0);
         driveBackLeft.setPower(0);
         driveBackRight.setPower(0);
-
-        // Turn off RUN_TO_POSITION
-        driveFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        driveFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        driveBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        driveBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-
 
 
     private double getIntegratedHeading() {
