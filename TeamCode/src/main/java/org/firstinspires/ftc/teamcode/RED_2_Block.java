@@ -13,6 +13,16 @@ public class RED_2_Block extends Auto_Methods {
         waitForStart();
 
         if (opModeIsActive() && !isStopRequested()) {
+            rightFoundation.setPosition(.4);
+            sleep(1000);
+            actuator.setPower(1);//TODO use method created however it requires encoders on actuator
+            sleep(300);
+            actuator.setPower(0);
+            turnClamp("PAR", 700);
+            clamp("OPEN", 500);
+            actuator.setPower(-1);//TODO use method created however it requires encoders on actuator
+            sleep(100);
+            actuator.setPower(0);
             turnClamp("PAR", 250);
             clamp("OPEN", 250);
             straightDriveEncoder(0.2, 95, 2.5);// TODO adjust tomorrow morning

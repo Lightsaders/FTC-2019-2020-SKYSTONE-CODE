@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,8 +10,9 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "TeleOp", group = "TeleOp")
-public class Teleop_2 extends LinearOpMode {
+@TeleOp(name = "TeleOp_Rylan", group = "TeleOp")
+
+public class TeleOp_Rylan extends LinearOpMode {
 
     private DcMotor driveFrontLeft;
     private DcMotor driveFrontRight;
@@ -25,7 +27,8 @@ public class Teleop_2 extends LinearOpMode {
     DigitalChannel limitSwitch;
     public Servo rightFoundation;
     public Servo leftFoundation;
-    public boolean toggle;
+    double toggle;
+    boolean toggler;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -51,6 +54,8 @@ public class Teleop_2 extends LinearOpMode {
         // set the digital channel to input.
         limitSwitch.setMode(DigitalChannel.Mode.INPUT);
 
+        toggle = 0.6;
+
         //waitForStart();
         while (!opModeIsActive() && !isStopRequested()) {
             telemetry.addData("status", "waiting for start command...");
@@ -59,38 +64,19 @@ public class Teleop_2 extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            leftFoundation.setPosition(0.2);
-            rightFoundation.setPosition(1);
-
             //Gamepad 1 left joystick x strafe
-            while(Math.abs(gamepad1.left_stick_x) > 0.1 && opModeIsActive()) {
-                driveFrontLeft.setPower(gamepad1.left_stick_x*-0.75);
-                driveBackLeft.setPower(gamepad1.left_stick_x * 0.75);
-                driveFrontRight.setPower(gamepad1.left_stick_x * 0.75);
-                driveBackRight.setPower(gamepad1.left_stick_x*-0.75);
+            while ((Math.abs(gamepad1.left_stick_x) > 0.1 || Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.right_stick_x) > 0.1) && gamepad1.left_bumper && opModeIsActive()) {
+                driveBackLeft.setPower(gamepad1.left_stick_y * 0.3 + gamepad1.left_stick_x * 0.3 + gamepad1.right_stick_x * -0.3);
+                driveFrontLeft.setPower(gamepad1.left_stick_y * 0.3 + gamepad1.left_stick_x * -0.3 + gamepad1.right_stick_x * -0.3);
+                driveFrontRight.setPower(gamepad1.left_stick_y * 0.3 + gamepad1.left_stick_x * 0.3 + gamepad1.right_stick_x * 0.3);
+                driveBackRight.setPower(gamepad1.left_stick_y * 0.3 + gamepad1.left_stick_x * -0.3 + gamepad1.right_stick_x * 0.3);
             }
-
-            //Gamepad 1 right joystick y straight
-            while(Math.abs(gamepad1.right_stick_y) > 0.1&& opModeIsActive()) {
-                driveBackLeft.setPower(gamepad1.right_stick_y*0.75);
-                driveFrontLeft.setPower(gamepad1.right_stick_y*0.75);
-                driveFrontRight.setPower(gamepad1.right_stick_y*0.75);
-                driveBackRight.setPower(gamepad1.right_stick_y*0.75);
-            }
-
-            // Gamepad 1 triggers for turning
-            while(Math.abs(gamepad1.right_trigger) > 0.1&& opModeIsActive()) {
-                driveBackLeft.setPower(gamepad1.right_trigger * -0.5);
-                driveFrontLeft.setPower(gamepad1.right_trigger * -0.5);
-                driveFrontRight.setPower(gamepad1.right_trigger*0.5);
-                driveBackRight.setPower(gamepad1.right_trigger*0.5);
-            }
-
-            while(Math.abs(gamepad1.left_trigger) > 0.1&& opModeIsActive()) {
-                driveBackLeft.setPower(gamepad1.left_trigger*0.5);
-                driveFrontLeft.setPower(gamepad1.left_trigger*0.5);
-                driveFrontRight.setPower(gamepad1.left_trigger *-0.5);
-                driveBackRight.setPower(gamepad1.left_trigger *-0.5);
+            //Gamepad 1 left joystick x strafe
+            while ((Math.abs(gamepad1.left_stick_x) > 0.1 || Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.right_stick_x) > 0.1) && !gamepad1.left_bumper && opModeIsActive()) {
+                driveBackLeft.setPower(gamepad1.left_stick_y * 0.6 + gamepad1.left_stick_x * 0.6 + gamepad1.right_stick_x * -0.6);
+                driveFrontLeft.setPower(gamepad1.left_stick_y * 0.6 + gamepad1.left_stick_x * -0.6 + gamepad1.right_stick_x * -0.6);
+                driveFrontRight.setPower(gamepad1.left_stick_y * 0.6 + gamepad1.left_stick_x * 0.6 + gamepad1.right_stick_x * 0.6);
+                driveBackRight.setPower(gamepad1.left_stick_y * 0.6 + gamepad1.left_stick_x * -0.6 + gamepad1.right_stick_x * 0.6);
             }
 
             driveBackLeft.setPower(0);
@@ -98,50 +84,53 @@ public class Teleop_2 extends LinearOpMode {
             driveFrontRight.setPower(0);
             driveBackRight.setPower(0);
 
-            if (gamepad2.right_bumper&& opModeIsActive()) {
-                clamp.setPosition(.45);
+            if (gamepad2.right_bumper && opModeIsActive()) {
+                clamp.setPosition(.25);
             }
-            if (gamepad2.left_bumper&& opModeIsActive()) {
-                clamp.setPosition(.75);
+            if (gamepad2.left_bumper && opModeIsActive()) {
+                clamp.setPosition(1);
             }
 
             actuator.setPower(gamepad2.right_trigger);
             actuator.setPower(gamepad2.left_trigger * -1);
 
-            if (gamepad2.dpad_left&& opModeIsActive()) {
-                rotation.setPosition(.21);
+            if (gamepad2.dpad_left && opModeIsActive()) {
+                rotation.setPosition(.98);
             }
-            if (gamepad2.dpad_right&& opModeIsActive()) {
-                rotation.setPosition(.68);
+            if (gamepad2.dpad_right && opModeIsActive()) {
+                rotation.setPosition(.64);
             }
-
 
 
             if (gamepad2.left_stick_y < 0 && opModeIsActive() && limitSwitch.getState()) {
-                liftleft.setPower(gamepad2.left_stick_y*-0.4);
-                liftright.setPower(gamepad2.left_stick_y*-0.4);
+                liftleft.setPower(gamepad2.left_stick_y * -0.05);
+                liftright.setPower(gamepad2.left_stick_y * -0.05);
                 telemetry.addLine("DOWN");
                 telemetry.update();
-            } else
-            if (gamepad2.left_stick_y > 0 && opModeIsActive()) {
-                liftleft.setPower(gamepad2.left_stick_y*-0.7);
-                liftright.setPower(gamepad2.left_stick_y*-0.7);
+            } else if (gamepad2.left_stick_y > 0 && opModeIsActive()) {
+                liftleft.setPower(gamepad2.left_stick_y * -0.65);
+                liftright.setPower(gamepad2.left_stick_y * -0.65);
                 telemetry.addLine("UP");
                 telemetry.update();
-            }else
-            if (gamepad2.left_stick_y == 0 && opModeIsActive()&& !limitSwitch.getState()) {
+            } else if (gamepad2.left_stick_y == 0 && opModeIsActive() && !limitSwitch.getState()) {
                 liftright.setPower(0);
                 liftleft.setPower(0);
                 telemetry.addLine("LIMIT SWITCH PRESSED");
                 telemetry.update();
-            }else
-            if(gamepad2.left_stick_y == 0 && opModeIsActive()&& limitSwitch.getState()) {
-                liftright.setPower(-0.2);
-                liftleft.setPower(-0.2);
+            } else if (gamepad2.left_stick_y == 0 && opModeIsActive() && limitSwitch.getState()) {
+                liftright.setPower(-0.18);
+                liftleft.setPower(-0.18);
                 telemetry.addLine("HOLD");
                 telemetry.update();
             }
+            if (gamepad2.x && opModeIsActive()) {
+                leftFoundation.setPosition(1);
+                rightFoundation.setPosition(0.15);
+            } else {
+                leftFoundation.setPosition(0.2);
+                rightFoundation.setPosition(.9);
+            }
+            idle();
         }
-        idle();
     }
 }

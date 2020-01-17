@@ -13,17 +13,33 @@ public class RED_Foundation_Grab extends Auto_Methods {
         waitForStart();
 
         if (opModeIsActive() && !isStopRequested()) {
+            rightFoundation.setPosition(.4);
+            sleep(1000);
+            actuator.setPower(1);//TODO use method created however it requires encoders on actuator
+            sleep(900);
+            actuator.setPower(0);
+//            sleep(1800);
+            turnClamp("PAR", 700);
+            clamp("OPEN", 500);
+            actuator.setPower(-1);//TODO use method created however it requires encoders on actuator
+            rotation.setPosition(.98);
+            sleep(500);
+            actuator.setPower(0);
 
-            strafeDriveEncoder(.7,29,"RIGHT",.75);
-            straightDriveEncoder(.3,120,2);
+            clamp.setPosition(.8);
+            strafeDriveEncoder(0.3, 39,  "RIGHT",1.5);
+
+
+            gyroDrive(.2, 88, 0);
             leftFoundation.setPosition(0.9);
             rightFoundation.setPosition(0.15);
-            sleep(1500);
-            straightDriveEncoder(.4,-160,2);
+            sleep(1600);
+            gyroDrive(.3, -94, 0);
             leftFoundation.setPosition(0.2);
             rightFoundation.setPosition(1);
             sleep(1500);
-            strafeDriveEncoder(.5,110,"LEFT",3.5);
+            gyroStrafe(0.3, 118, 0, "LEFT");
+            clamp("CLOSE", 700);
         }
     }
 }
