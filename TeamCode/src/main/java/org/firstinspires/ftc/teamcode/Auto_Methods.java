@@ -50,7 +50,7 @@ public abstract class Auto_Methods extends LinearOpMode {
     double ROBOT_RADIUS_CM = 29;
     double COUNTS_PER_CM_GOBUILDA = ((COUNTS_PER_MOTOR_GOBUILDA * DRIVE_GEAR_REDUCTION * TUNING_DRIVE) / (WHEEL_DIAMETER_CM * Math.PI)) / 2;
     int rpm = 1;// TODO need to change
-    double resistance = 0.75;// TODO need to changes
+    double resistance = 0.75;// TODO need to change
 
     public void initialize() {
 
