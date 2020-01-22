@@ -971,10 +971,10 @@ public abstract class Auto_Methods extends LinearOpMode {
                     break;
                 case "RIGHT":
                     // Set Target and Turn On RUN_TO_POSITION
-                    driveFrontLeft.setTargetPosition(frontLeftTarget);
-                    driveFrontRight.setTargetPosition(frontRightTarget * -1);
-                    driveBackLeft.setTargetPosition(backLeftTarget * -1);
-                    driveBackRight.setTargetPosition(backRightTarget);
+//                    driveFrontLeft.setTargetPosition(frontLeftTarget);
+//                    driveFrontRight.setTargetPosition(frontRightTarget * -1);
+//                    driveBackLeft.setTargetPosition(backLeftTarget * -1);
+//                    driveBackRight.setTargetPosition(backRightTarget);
 
                     driveFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     driveFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -1011,13 +1011,13 @@ public abstract class Auto_Methods extends LinearOpMode {
                         driveFrontRight.setPower(rightSpeed);
                         driveBackRight.setPower(leftSpeed);
 
-                        // Display drive status for the driver.
-                        telemetry.addData("Err/St", "%5.1f/%5.1f", error, steer);
-                        telemetry.addData("Target", "%7d:%7d:%7d:%7d", frontLeftTarget, frontRightTarget, backLeftTarget, backRightTarget);
-                        telemetry.addData("Actual", "%7d:%7d:%7d:%7d", driveFrontLeft.getCurrentPosition(),
-                                driveFrontRight.getCurrentPosition(), driveBackLeft.getCurrentPosition(), driveBackRight.getCurrentPosition());
-                        telemetry.addData("Speed", "%5.2f:%5.2f", leftSpeed, rightSpeed);
-                        telemetry.update();
+//                        // Display drive status for the driver.
+//                        telemetry.addData("Err/St", "%5.1f/%5.1f", error, steer);
+//                        telemetry.addData("Target", "%7d:%7d:%7d:%7d", frontLeftTarget, frontRightTarget, backLeftTarget, backRightTarget);
+//                        telemetry.addData("Actual", "%7d:%7d:%7d:%7d", driveFrontLeft.getCurrentPosition(),
+//                                driveFrontRight.getCurrentPosition(), driveBackLeft.getCurrentPosition(), driveBackRight.getCurrentPosition());
+//                        telemetry.addData("Speed", "%5.2f:%5.2f", leftSpeed, rightSpeed);
+//                        telemetry.update();
                     }
                     break;
             }
