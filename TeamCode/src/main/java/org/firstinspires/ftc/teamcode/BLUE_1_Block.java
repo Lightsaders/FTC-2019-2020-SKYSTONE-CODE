@@ -11,7 +11,7 @@ public class BLUE_1_Block extends Auto_Methods {
     public void runOpMode() throws InterruptedException {
 
         // init robot
-        initialize();
+        initCompBot();
         waitForStart();
 
         if (opModeIsActive() && !isStopRequested()) {

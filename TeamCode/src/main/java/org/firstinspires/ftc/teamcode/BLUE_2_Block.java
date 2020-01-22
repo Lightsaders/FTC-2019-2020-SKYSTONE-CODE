@@ -8,7 +8,7 @@ public class BLUE_2_Block extends Auto_Methods {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize();
+        initCompBot();
         waitForStart();
         if (opModeIsActive() && !isStopRequested()) {
             rightFoundation.setPosition(.4);
@@ -63,14 +63,14 @@ public class BLUE_2_Block extends Auto_Methods {
                     break;
                 case "MIDDLE":
                     if (!isStopRequested() && opModeIsActive()) {
-                        gyroDrive(.3,-4,0);
+                        gyroDrive(.3,-4,0,2);
                         strafeDriveEncoder(1, 10, "LEFT", 1);
                         actuator.setPower(1);//TODO use method created however it requires encoders on actuator
                         sleep(400);
                         actuator.setPower(0);
                         clamp.setPosition(.25);
                         sleep(800);
-                        gyroDrive(0.3, -25, 0);
+                        gyroDrive(0.3, -25, 0,2);
                         turnEncoder(0.5, 76, "CC", 1);
                         straightDriveEncoder(0.7, 140, 2.25);
                         clamp("OPEN", 250);
@@ -97,7 +97,7 @@ public class BLUE_2_Block extends Auto_Methods {
                         actuator.setPower(0);
                         clamp.setPosition(.25);
                         sleep(800);
-                        gyroDrive(0.3, -30, 0);
+                        gyroDrive(0.3, -30, 0,2);
                         turnEncoder(0.5, 76, "CC", 1);
                         straightDriveEncoder(0.6, 130, 1.5);
                         clamp("OPEN", 250);
