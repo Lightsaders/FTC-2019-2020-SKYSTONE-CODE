@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous(name = "BLUE_2_BLOCK")
 public class BLUE_2_Block extends Auto_Methods {
 
-
     @Override
     public void runOpMode() throws InterruptedException {
         initCompBot();
@@ -13,21 +12,19 @@ public class BLUE_2_Block extends Auto_Methods {
         if (opModeIsActive() && !isStopRequested()) {
             rightFoundation.setPosition(.4);
             sleep(1000);
-            actuator.setPower(1);//TODO use method created however it requires encoders on actuator
+            actuator.setPower(1);
             sleep(900);
             actuator.setPower(0);
-//            sleep(1800);
             turnClamp("PAR", 700);
             clamp("OPEN", 500);
-            actuator.setPower(-1);//TODO use method created however it requires encoders on actuator
+            actuator.setPower(-1);
             rotation.setPosition(.98);
             sleep(500);
             actuator.setPower(0);
-
             clamp.setPosition(.8);
             rightFoundation.setPosition(.9);
             sleep(1000);
-            straightDriveEncoder(0.2, 90, 2.5);// TODO adjust tomorrow morning
+            straightDriveEncoder(0.2, 90, 2.5);
             skystoneColorScan("BLUE");
             telemetry.addLine("Skystone position: " + positionSkystone);
             telemetry.update();
@@ -36,7 +33,7 @@ public class BLUE_2_Block extends Auto_Methods {
                     if (!isStopRequested() && opModeIsActive()) {
                         straightDriveEncoder(0.2, -9, 0.75);
                         strafeDriveEncoder(1, 10, "RIGHT", 0.75);
-                        actuator.setPower(1);//TODO use method created however it requires encoders on actuator
+                        actuator.setPower(1);
                         sleep(400);
                         actuator.setPower(0);
                         clamp.setPosition(.25);
@@ -65,7 +62,7 @@ public class BLUE_2_Block extends Auto_Methods {
                     if (!isStopRequested() && opModeIsActive()) {
                         gyroDrive(.3,-4,0,2);
                         strafeDriveEncoder(1, 10, "LEFT", 1);
-                        actuator.setPower(1);//TODO use method created however it requires encoders on actuator
+                        actuator.setPower(1);
                         sleep(400);
                         actuator.setPower(0);
                         clamp.setPosition(.25);
@@ -92,7 +89,7 @@ public class BLUE_2_Block extends Auto_Methods {
                     if (!isStopRequested() && opModeIsActive()) {
                         straightDriveEncoder(0.2, -6, 0.75);
                         strafeDriveEncoder(0.4, 25, "LEFT", .75);
-                        actuator.setPower(1);//TODO use method created however it requires encoders on actuator
+                        actuator.setPower(1);
                         sleep(400);
                         actuator.setPower(0);
                         clamp.setPosition(.25);

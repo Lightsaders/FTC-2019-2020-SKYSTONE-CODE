@@ -14,7 +14,7 @@ public class BLUE_Foundation_Grab extends Auto_Methods {
 
         if (opModeIsActive() && !isStopRequested()) {
             gyroStrafe(0.3, 39, 0, "LEFT",2);
-            actuator.setPower(1);//TODO use method created however it requires encoders on actuator
+            actuator.setPower(1);
             sleep(100);
             actuator.setPower(0);
             turnClamp("PAR", 700);
@@ -27,7 +27,7 @@ public class BLUE_Foundation_Grab extends Auto_Methods {
             leftFoundation.setPosition(0.2);
             rightFoundation.setPosition(1);
             sleep(1500);
-            gyroStrafe(0.3, 112, 0, "RIGHT",2);
+            gyroStrafe(0.3, 112, 0, "RIGHT",2);// TODO REPLACE WITH NORMAL STRAFE DRIVE
             clamp("CLOSE", 700);
         }
     }

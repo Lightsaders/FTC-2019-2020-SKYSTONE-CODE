@@ -123,6 +123,37 @@ public abstract class Auto_Methods extends LinearOpMode {
     }
 
     /**
+     * Method to intialize the Practice Robot
+     */
+    public void initPracticeBot() {
+
+        // Init Drive Motors
+        driveFrontLeft = hardwareMap.dcMotor.get("driveFrontLeft");
+        driveFrontRight = hardwareMap.dcMotor.get("driveFrontRight");
+        driveBackLeft = hardwareMap.dcMotor.get("driveBackLeft");
+        driveBackRight = hardwareMap.dcMotor.get("driveBackRight");
+
+        // Reverse Drive Motors
+        driveFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        driveBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+    }
+
+
+    /**
      * Method to find skystone postition based off of color sensors
      * @param color color for match play either (RED or BLUE)
      */
@@ -705,6 +736,7 @@ public abstract class Auto_Methods extends LinearOpMode {
                             rightSpeed /= max;
                         }
 
+                        // TODO this needs to be adjusted NEED TO FIGURE OUT HOW TO TURN WHILE STRAFING
                         driveFrontLeft.setPower(rightSpeed);
                         driveBackLeft.setPower(leftSpeed);
                         driveFrontRight.setPower(leftSpeed);
@@ -761,6 +793,7 @@ public abstract class Auto_Methods extends LinearOpMode {
                             rightSpeed /= max;
                         }
 
+                        // TODO this needs to be adjusted NEED TO FIGURE OUT HOW TO TURN WHILE STRAFING
                         driveFrontLeft.setPower(leftSpeed);
                         driveBackLeft.setPower(rightSpeed);
                         driveFrontRight.setPower(rightSpeed);
@@ -800,11 +833,6 @@ public abstract class Auto_Methods extends LinearOpMode {
      */
     // TODO actually write the method for this then replace encoder turn with this
     public void gyroTurn(double speed,double angle,String direction,int timeCutOff) {
-        double max;
-        double error;
-        double steer;
-        double leftSpeed;
-        double rightSpeed;
         double end = 0;
         double t = 0;
 
@@ -857,7 +885,6 @@ public abstract class Auto_Methods extends LinearOpMode {
         driveBackLeft.setPower(0);
         driveBackRight.setPower(0);
     }
-
 
     /**
      * Method to set clamp servo position

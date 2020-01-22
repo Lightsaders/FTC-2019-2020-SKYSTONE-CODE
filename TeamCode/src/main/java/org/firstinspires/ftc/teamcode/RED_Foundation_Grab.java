@@ -34,7 +34,7 @@ public class RED_Foundation_Grab extends Auto_Methods {
             leftFoundation.setPosition(0.2);
             rightFoundation.setPosition(1);
             sleep(1500);
-            gyroStrafe(0.3, 118, 0, "LEFT",2);
+            gyroStrafe(0.3, 118, 0, "LEFT",2);// TODO REPLACE WITH NORMAL STRAFE DRIVE
             clamp("CLOSE", 700);
         }
     }
