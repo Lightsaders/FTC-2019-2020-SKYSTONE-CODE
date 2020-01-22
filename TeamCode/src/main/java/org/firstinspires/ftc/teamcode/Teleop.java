@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,8 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-
 @TeleOp(name = "Teleop", group = "TeleOp")
+@Disabled
 public class Teleop extends LinearOpMode {
 
     private DcMotor driveFrontLeft;
@@ -66,61 +67,59 @@ public class Teleop extends LinearOpMode {
             //else
             //  blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIGHT_CHASE_BLUE);
             // GAMEPAD 1 BASE
-
-            //driveBackLeft.setPower(gamepad1.left_stick_y);
-            //driveFrontLeft.setPower(gamepad1.left_stick_y);
-            //driveFrontRight.setPower(gamepad1.left_stick_y);
-            //driveBackRight.setPower(gamepad1.left_stick_y);
-//            driveBackLeft.setPower(gamepad1.left_stick_y *.8 + gamepad1.left_stick_x*.8);
-//            driveFrontLeft.setPower(gamepad1.left_stick_y *.8 + gamepad1.left_stick_x * -.8);
-//            driveFrontRight.setPower(gamepad1.left_stick_y*.8 + gamepad1.left_stick_x*.8);
-//            driveBackRight.setPower(gamepad1.left_stick_y*.8 + gamepad1.left_stick_x * -.8);
+            telemetry.addData("Left stick y",gamepad1.left_stick_y);
+            telemetry.addData("Right stick x",gamepad1.right_stick_x);
+            telemetry.addData("Left stick x",gamepad1.left_stick_x);
+            telemetry.addData("Right stick y",gamepad1.right_stick_y);
+            telemetry.update();
+            driveBackLeft.setPower(gamepad1.right_stick_y);
+            driveFrontLeft.setPower(gamepad1.right_stick_y);
+            driveFrontRight.setPower(gamepad1.right_stick_y);
+            driveBackRight.setPower(gamepad1.right_stick_y);
+//            driveBackLeft.setPower(gamepad1.left_stick_x*-1);
+//            driveFrontLeft.setPower(gamepad1.left_stick_x*-1);
+//            driveFrontRight.setPower(gamepad1.left_stick_x);
+//            driveBackRight.setPower(gamepad1.left_stick_x);
+////            driveBackLeft.setPower(gamepad1.left_stick_y *.8 + gamepad1.left_stick_x*.8);
+////            driveFrontLeft.setPower(gamepad1.left_stick_y *.8 + gamepad1.left_stick_x * -.8);
+////            driveFrontRight.setPower(gamepad1.left_stick_y*.8 + gamepad1.left_stick_x*.8);
+////            driveBackRight.setPower(gamepad1.left_stick_y*.8 + gamepad1.left_stick_x * -.8);
+////            // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
+////            driveFrontLeft.setPower(gamepad1.right_stick_x * -.8);
+////            driveBackLeft.setPower(gamepad1.right_stick_x * -.8);
+////            driveFrontRight.setPower(gamepad1.right_stick_x*.8);
+////            driveBackRight.setPower(gamepad1.right_stick_x*.8);
+//
+//
+//            //TODO make it not have to be held
+//
+////            while (gamepad1.right_bumper) {
+////            driveBackLeft.setPower(gamepad1.left_trigger);
+////            driveFrontLeft.setPower(gamepad1.left_trigger);
+////            driveFrontRight.setPower(gamepad1.left_trigger);
+////            driveBackRight.setPower(gamepad1.left_trigger);
 //            // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
-//            driveFrontLeft.setPower(gamepad1.right_stick_x * -.8);
-//            driveBackLeft.setPower(gamepad1.right_stick_x * -.8);
-//            driveFrontRight.setPower(gamepad1.right_stick_x*.8);
-//            driveBackRight.setPower(gamepad1.right_stick_x*.8);
-
-
-            //TODO make it not have to be held
-
-            while (gamepad1.right_bumper) {
-                driveBackLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x * -1);
-                driveFrontLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x );
-                driveFrontRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x*-1);
-                driveBackRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
-                // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
-                driveFrontLeft.setPower(gamepad1.right_stick_x * -1);
-                driveBackLeft.setPower(gamepad1.right_stick_x * -1);
-                driveFrontRight.setPower(gamepad1.right_stick_x);
-                driveBackRight.setPower(gamepad1.right_stick_x);
-            }
-            while (gamepad1.left_bumper) {
-                driveBackLeft.setPower(gamepad1.left_stick_y * .3 + gamepad1.left_stick_x * .3);
-                driveFrontLeft.setPower(gamepad1.left_stick_y * .3 + gamepad1.left_stick_x * -.3);
-                driveFrontRight.setPower(gamepad1.left_stick_y * .3 + gamepad1.left_stick_x * .3);
-                driveBackRight.setPower(gamepad1.left_stick_y * .3 + gamepad1.left_stick_x * -.3);
-                // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
-                driveFrontLeft.setPower(gamepad1.right_stick_x * -.3);
-                driveBackLeft.setPower(gamepad1.right_stick_x * -.3);
-                driveFrontRight.setPower(gamepad1.right_stick_x * .3);
-                driveBackRight.setPower(gamepad1.right_stick_x * .3);
-            }
-            if(gamepad1.a){
-                driveBackLeft.setPower(-.3);
-                driveFrontLeft.setPower(.3);
-                driveBackRight.setPower(.3);
-                driveFrontRight.setPower(-.3);
-            }
-            driveBackLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x * -1);
-            driveFrontLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x );
-            driveFrontRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x*-1);
-            driveBackRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
-            // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
-            driveFrontLeft.setPower(gamepad1.right_stick_x * -1);
+            driveFrontLeft.setPower(gamepad1.right_stick_x);
             driveBackLeft.setPower(gamepad1.right_stick_x * -1);
-            driveFrontRight.setPower(gamepad1.right_stick_x);
+            driveFrontRight.setPower(gamepad1.right_stick_x * -1);
             driveBackRight.setPower(gamepad1.right_stick_x);
+////            }
+
+//            if(gamepad1.a){
+//                driveBackLeft.setPower(.3);
+//                driveFrontLeft.setPower(.3);
+//                driveBackRight.setPower(.3);
+//                driveFrontRight.setPower(.3);
+//            }
+//            driveBackLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x * -1);
+//            driveFrontLeft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x );
+//            driveFrontRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x*-1);
+//            driveBackRight.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
+//            // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
+//            driveFrontLeft.setPower(gamepad1.right_stick_x * -1);
+//            driveBackLeft.setPower(gamepad1.right_stick_x * -1);
+//            driveFrontRight.setPower(gamepad1.right_stick_x);
+//            driveBackRight.setPower(gamepad1.right_stick_x);
 
             if (gamepad2.right_bumper) {
                 clamp.setPosition(.68);

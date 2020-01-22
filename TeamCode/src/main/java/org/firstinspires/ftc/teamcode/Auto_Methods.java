@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.sax.TextElementListener;
 import android.view.View;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,6 +15,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+import java.util.Locale;
 
 public abstract class Auto_Methods extends LinearOpMode {
     // Drive Motors
@@ -46,11 +57,23 @@ public abstract class Auto_Methods extends LinearOpMode {
     double COUNTS_PER_MOTOR_GOBUILDA = 537.5;    // gobilda
     double DRIVE_GEAR_REDUCTION = 1;    // 1:1
     double WHEEL_DIAMETER_CM = 10;     // mecanum wheels
-    double TUNING_DRIVE = 1.1;
+    double TUNING_DRIVE = 1.22;
     double ROBOT_RADIUS_CM = 29;
     double COUNTS_PER_CM_GOBUILDA = ((COUNTS_PER_MOTOR_GOBUILDA * DRIVE_GEAR_REDUCTION * TUNING_DRIVE) / (WHEEL_DIAMETER_CM * Math.PI)) / 2;
-    int rpm = 1;// TODO need to change
-    double resistance = 0.75;// TODO need to changes
+
+    static final double P_DRIVE_COEFF = 0.04;     // Larger is more responsive, but also less stable
+    static final double P_STRAFE_COEFF = 0.02;     // Larger is more responsive, but also less stable
+    private double previousHeading = 0; //Outside of method
+    private double integratedHeading = 0;
+
+    // The IMU sensor object
+    BNO055IMU imu;
+
+    // State used for updating telemetry
+    Orientation angles;
+    Acceleration gravity;
+
+    //TODO make timing equation as backup for drive methods
 
     public void initialize() {
 
@@ -63,12 +86,6 @@ public abstract class Auto_Methods extends LinearOpMode {
         // Reverse Drive Motors
         driveFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         driveBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        // Setting Zero Behavior for Drive Train Motors
-        driveFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        driveFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        driveBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        driveBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Init Color Sensors
         colorSensorLeft = hardwareMap.get(NormalizedColorSensor.class, "colorSensorLeft");
@@ -88,6 +105,20 @@ public abstract class Auto_Methods extends LinearOpMode {
         // Init Limit Switch
         limitSwitch = hardwareMap.get(DigitalChannel.class, "limitSwitch");
         limitSwitch.setMode(DigitalChannel.Mode.INPUT);
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
     }
 
     // This sets positionSkystone according to the colorSensors
@@ -112,31 +143,31 @@ public abstract class Auto_Methods extends LinearOpMode {
         colorsRight.blue /= max0;
 
 //        while(opModeIsActive() && !isStopRequested()) {
-            colorsLeft = colorSensorLeft.getNormalizedColors();
-            Color.colorToHSV(colorsLeft.toColor(), hsvValuesLeft);
-            telemetry.addLine()
-                    .addData("H", "%.3f", hsvValuesLeft[0])
-                    .addData("S", "%.3f", hsvValuesLeft[1])
-                    .addData("V", "%.3f", hsvValuesLeft[2]);
-            telemetry.addLine()
-                    .addData("a", "%.3f", colorsLeft.alpha)
-                    .addData("r", "%.3f", colorsLeft.red)
-                    .addData("g", "%.3f", colorsLeft.green)
-                    .addData("b", "%.3f", colorsLeft.blue);
+        colorsLeft = colorSensorLeft.getNormalizedColors();
+        Color.colorToHSV(colorsLeft.toColor(), hsvValuesLeft);
+        telemetry.addLine()
+                .addData("H", "%.3f", hsvValuesLeft[0])
+                .addData("S", "%.3f", hsvValuesLeft[1])
+                .addData("V", "%.3f", hsvValuesLeft[2]);
+        telemetry.addLine()
+                .addData("a", "%.3f", colorsLeft.alpha)
+                .addData("r", "%.3f", colorsLeft.red)
+                .addData("g", "%.3f", colorsLeft.green)
+                .addData("b", "%.3f", colorsLeft.blue);
 
-            colorsRight = colorSensorRight.getNormalizedColors();
-            Color.colorToHSV(colorsRight.toColor(), hsvValuesRight);
-            telemetry.addLine()
-                    .addData("H", "%.3f", hsvValuesRight[0])
-                    .addData("S", "%.3f", hsvValuesRight[1])
-                    .addData("V", "%.3f", hsvValuesRight[2]);
-            telemetry.addLine()
-                    .addData("a", "%.3f", colorsRight.alpha)
-                    .addData("r", "%.3f", colorsRight.red)
-                    .addData("g", "%.3f", colorsRight.green)
-                    .addData("b", "%.3f", colorsRight.blue);
+        colorsRight = colorSensorRight.getNormalizedColors();
+        Color.colorToHSV(colorsRight.toColor(), hsvValuesRight);
+        telemetry.addLine()
+                .addData("H", "%.3f", hsvValuesRight[0])
+                .addData("S", "%.3f", hsvValuesRight[1])
+                .addData("V", "%.3f", hsvValuesRight[2]);
+        telemetry.addLine()
+                .addData("a", "%.3f", colorsRight.alpha)
+                .addData("r", "%.3f", colorsRight.red)
+                .addData("g", "%.3f", colorsRight.green)
+                .addData("b", "%.3f", colorsRight.blue);
 
-            telemetry.update();
+        telemetry.update();
 //        }
 
         // Scanning Loop
@@ -198,6 +229,11 @@ public abstract class Auto_Methods extends LinearOpMode {
         int backRightTarget;
         double end = 0;
         double t = 0;
+        // Setting Zero Behavior for Drive Train Motors
+        driveFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         if (opModeIsActive()) {
 
@@ -230,7 +266,8 @@ public abstract class Auto_Methods extends LinearOpMode {
             driveBackRight.setPower(Math.abs(speed));
 
             t = getRuntime();
-            end = ((Math.abs(distanceCM)/WHEEL_DIAMETER_CM)/(rpm*resistance))*60*(2-speed) + getRuntime();// TODO this needs to be tested
+//            end = ((Math.abs(distanceCM)/WHEEL_DIAMETER_CM)/(rpm*resistance))*60*(2-speed) + getRuntime();// TODO this needs to be tested
+            end = getRuntime() + custom;
 
             while (opModeIsActive() && !isStopRequested() &&
                     (getRuntime() <= end) &&
@@ -263,10 +300,10 @@ public abstract class Auto_Methods extends LinearOpMode {
             driveBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         }
-    }// TODO test this
+    }// TODO add imu correction and odometry wheels
 
     // Drives the robot left or right for a given speed and distance according to the encoder
-    public void strafeDriveEncoder(double speed, double distanceCM, String direction) {
+    public void strafeDriveEncoder(double speed, double distanceCM, String direction, double custom) {
         int frontLeftTarget = 0;
         int backLeftTarget = 0;
         int frontRightTarget = 0;
@@ -274,6 +311,11 @@ public abstract class Auto_Methods extends LinearOpMode {
         double end = 0;
         double t = 0;
         double distancePerRotation = 1;// TODO this needs to be found
+        // Setting Zero Behavior for Drive Train Motors
+        driveFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         switch (direction) {
             case "LEFT":
@@ -332,7 +374,8 @@ public abstract class Auto_Methods extends LinearOpMode {
         if (opModeIsActive()) {
 
             t = getRuntime();
-            end = (Math.abs(distanceCM)/distancePerRotation)*60*(2-speed) + getRuntime();// TODO this needs to be tested
+//            end = (Math.abs(distanceCM)/distancePerRotation)*60*(2-speed) + getRuntime();// TODO this needs to be tested
+            end = custom + getRuntime();
 
             while (opModeIsActive() && !isStopRequested() &&
                     (getRuntime() <= end) &&
@@ -366,10 +409,10 @@ public abstract class Auto_Methods extends LinearOpMode {
 
         }
 
-    }// TODO test this
+    }// TODO add imu correction and odometry wheels
 
     // Turns the robot clockwise(c) or counter-clockwise(cc) for a given speed and degree according to the encoder
-    public void turnEncoder(double speed, double turnDegrees, String direction) {
+    public void turnEncoder(double speed, double turnDegrees, String direction, double custom) {
         double tuning = 1.46;
         double distance = ROBOT_RADIUS_CM * tuning * (((turnDegrees) * (Math.PI)) / (180)); // Using arc length formula
         int frontLeftTarget = 0;
@@ -378,6 +421,12 @@ public abstract class Auto_Methods extends LinearOpMode {
         int backRightTarget = 0;
         double end = 0;
         double t = 0;
+
+        // Setting Zero Behavior for Drive Train Motors
+        driveFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //RESET ENCODERS
         driveFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -422,7 +471,8 @@ public abstract class Auto_Methods extends LinearOpMode {
             driveBackRight.setPower(speed);
 
             t = getRuntime();
-            end = ((Math.abs(distance)/WHEEL_DIAMETER_CM)/(rpm*resistance))*60*(2-speed) + getRuntime();// TODO this needs to be tested
+//            end = ((Math.abs(distance)/WHEEL_DIAMETER_CM)/(rpm*resistance))*60*(2-speed) + getRuntime();// TODO this needs to be tested
+            end = getRuntime() + custom;
 
             while (opModeIsActive() &&
                     (getRuntime() <= end) &&
@@ -456,15 +506,15 @@ public abstract class Auto_Methods extends LinearOpMode {
         }
         //telemetrySender("DEGREES CURRENT: ", "" + getCurrentHeading(), "");
         //telemetrySender("DEGREES FINAL: ", "" + (getCurrentHeading() + headingStart), "");
-    }// TODO test this
+    }// TODO use imu instead of encoders
 
     public void clamp(String position, int sleep) {
         switch (position) {
             case "OPEN":
-                clamp.setPosition(1);
+                clamp.setPosition(.8);
                 break;
             case "CLOSE":
-                clamp.setPosition(.5);
+                clamp.setPosition(.25);
                 break;
             case "SEMI OPEN":
                 clamp.setPosition(.8);
@@ -480,26 +530,26 @@ public abstract class Auto_Methods extends LinearOpMode {
                 rightFoundation.setPosition(0.15);
                 break;
             case "UP":
-                leftFoundation.setPosition(0);
-                rightFoundation.setPosition(1);
-                break;
-        }
-        sleep(sleep);// This is to allow time for the servo to move
-    }// TODO test this
-
-    public void turnClamp(String state, int sleep) {
-        switch (state) {
-            case "PERP":
-                rotation.setPosition(0.8);
-                break;
-            case "PAR":
-                rotation.setPosition(0.4);
+                leftFoundation.setPosition(0.2);
+                rightFoundation.setPosition(.9);
                 break;
         }
         sleep(sleep);// This is to allow time for the servo to move
     }
 
-    public void actuatorDistance(int distanceCM, double speed){
+    public void turnClamp(String state, int sleep) {
+        switch (state) {
+            case "PERP":
+                rotation.setPosition(.98);
+                break;
+            case "PAR":
+                rotation.setPosition(.64);
+                break;
+        }
+        sleep(sleep);// This is to allow time for the servo to move
+    }
+
+    public void actuatorDistance(int distanceCM, double speed) {
         int actuatorTarget;
         double tuner = 1;// TODO change this if distanceCM doesnt correspond to actuator distance
         double end = 0;
@@ -525,7 +575,7 @@ public abstract class Auto_Methods extends LinearOpMode {
 
             while (opModeIsActive() && !isStopRequested() &&
                     (getRuntime() <= end) &&
-                    (actuator.isBusy() )) {
+                    (actuator.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("RUN TIME CURRENT: ", "" + getRuntime());
@@ -544,9 +594,9 @@ public abstract class Auto_Methods extends LinearOpMode {
             //Turn off run to position
             actuator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-    }// TODO test this
+    }// TODO get measurement
 
-    public void liftDistance(int distanceCM, double speed){
+    public void liftDistance(int distanceCM, double speed) {
         int leftLiftTarget;
         int rightLiftTarget;
         double tune = 1;// TODO change this
@@ -560,7 +610,7 @@ public abstract class Auto_Methods extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
             leftLiftTarget = liftleft.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA * tune);
-            rightLiftTarget = liftright.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA* tune);
+            rightLiftTarget = liftright.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM_GOBUILDA * tune);
 
             // set target position to each motor
             liftleft.setTargetPosition(leftLiftTarget);
@@ -601,10 +651,406 @@ public abstract class Auto_Methods extends LinearOpMode {
             liftright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         }
-    }// TODO test this
+    }// TODO odometry pulley
 
     @Override
     public void runOpMode() throws InterruptedException {
 
+    }
+
+    // TODO IMU calibration method
+
+    /**
+     * Method to drive on a fixed compass bearing (angle), based on encoder counts.
+     * Move will stop if either of these conditions occur:
+     * 1) Move gets to the desired position
+     * 2) Driver stops the opmode running.
+     *
+     * @param speed    Target speed for forward motion.  Should allow for _/- variance for adjusting heading
+     * @param distance Distance (in inches) to move from current position.  Negative distance means move backwards.
+     * @param angle    Absolute Angle (in Degrees) relative to last gyro reset.
+     *                 0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                 If a relative angle is required, add/subtract from current heading.
+     */
+    public void gyroDrive(double speed,
+                          double distance,
+                          double angle) {
+
+        int frontLeftTarget;
+        int frontRightTarget;
+        int backLeftTarget;
+        int backRightTarget;
+        int moveCounts;
+        double max;
+        double error;
+        double steer;
+        double leftSpeed;
+        double rightSpeed;
+
+        // Setting Zero Behavior for Drive Train Motors
+        driveFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            moveCounts = (int) (distance * COUNTS_PER_CM_GOBUILDA);
+            frontLeftTarget = driveFrontLeft.getCurrentPosition() + moveCounts;
+            frontRightTarget = driveFrontRight.getCurrentPosition() + moveCounts;
+            backLeftTarget = driveBackLeft.getCurrentPosition() + moveCounts;
+            backRightTarget = driveBackRight.getCurrentPosition() + moveCounts;
+
+            // Set Target and Turn On RUN_TO_POSITION
+            driveFrontLeft.setTargetPosition(frontLeftTarget);
+            driveFrontRight.setTargetPosition(frontRightTarget);
+            driveBackLeft.setTargetPosition(backLeftTarget);
+            driveBackRight.setTargetPosition(backRightTarget);
+
+            driveFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            driveFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            driveBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            driveBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // start motion.
+            speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+            driveFrontLeft.setPower(speed);
+            driveFrontRight.setPower(speed);
+            driveBackLeft.setPower(speed);
+            driveBackRight.setPower(speed);
+
+            // keep looping while we are still active, and BOTH motors are running.
+            while (opModeIsActive() &&
+                    (driveFrontLeft.isBusy() && driveFrontRight.isBusy() && driveBackLeft.isBusy() && driveBackRight.isBusy())) {
+
+                // adjust relative speed based on heading error.
+                error = getError(angle);
+                steer = getSteer(error, P_DRIVE_COEFF);
+
+                // if driving in reverse, the motor correction also needs to be reversed
+                if (distance < 0)
+                    steer *= -1.0;
+
+                leftSpeed = speed - steer;
+                rightSpeed = speed + steer;
+
+                // Normalize speeds if either one exceeds +/- 1.0;
+                max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+                if (max > 1.0) {
+                    leftSpeed /= max;
+                    rightSpeed /= max;
+                }
+
+                driveFrontLeft.setPower(leftSpeed);
+                driveBackLeft.setPower(leftSpeed);
+                driveFrontRight.setPower(rightSpeed);
+                driveBackRight.setPower(rightSpeed);
+
+                // Display drive status for the driver.
+                telemetry.addData("Err/St", "%5.1f/%5.1f", error, steer);
+                telemetry.addData("Target", "%7d:%7d:%7d:%7d", frontLeftTarget, frontRightTarget, backLeftTarget, backRightTarget);
+                telemetry.addData("Actual", "%7d:%7d:%7d:%7d", driveFrontLeft.getCurrentPosition(),
+                        driveFrontRight.getCurrentPosition(), driveBackLeft.getCurrentPosition(), driveBackRight.getCurrentPosition());
+                telemetry.addData("Speed", "%5.2f:%5.2f", leftSpeed, rightSpeed);
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            driveFrontLeft.setPower(0);
+            driveFrontRight.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            driveFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            driveFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
+    public double getError(double targetAngle) {
+
+        double robotError;
+
+        // calculate error in -179 to +180 range  (
+        robotError = targetAngle - getHeading();
+        while (robotError > 180) robotError -= 360;
+        while (robotError <= -180) robotError += 360;
+        return robotError;
+    }
+
+    public double getSteer(double error, double PCoeff) {
+        return Range.clip(error * PCoeff, -1, 1);
+    }
+
+    Double getHeading() {
+        double heading = 0;
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        heading = formatAngle(angles.angleUnit, angles.firstAngle);
+        return heading;
+    }
+
+    Double formatAngle(AngleUnit angleUnit, double angle) {
+        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
+    }
+
+    Double formatDegrees(double degrees) {
+        return AngleUnit.DEGREES.normalize(degrees);
+    }
+
+    public void gyroStrafe(double speed,
+                           double distance,
+                           double angle,
+                           String direction) {
+
+        int frontLeftTarget;
+        int frontRightTarget;
+        int backLeftTarget;
+        int backRightTarget;
+        int moveCounts;
+        double max;
+        double error;
+        double steer;
+        double leftSpeed;
+        double rightSpeed;
+        double tune;
+        tune = 1.22;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            moveCounts = (int) (distance * COUNTS_PER_CM_GOBUILDA * tune);
+            frontLeftTarget = driveFrontLeft.getCurrentPosition() + moveCounts;
+            frontRightTarget = driveFrontRight.getCurrentPosition() + moveCounts;
+            backLeftTarget = driveBackLeft.getCurrentPosition() + moveCounts;
+            backRightTarget = driveBackRight.getCurrentPosition() + moveCounts;
+
+
+            switch (direction) {
+                case "LEFT":
+                    // Set Target and Turn On RUN_TO_POSITION
+                    driveFrontLeft.setTargetPosition(frontLeftTarget * -1);
+                    driveFrontRight.setTargetPosition(frontRightTarget);
+                    driveBackLeft.setTargetPosition(backLeftTarget);
+                    driveBackRight.setTargetPosition(backRightTarget * -1);
+
+                    driveFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    driveFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    driveBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    driveBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    // start motion.
+                    speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+                    driveFrontLeft.setPower(speed * -1);
+                    driveFrontRight.setPower(speed);
+                    driveBackLeft.setPower(speed);
+                    driveBackRight.setPower(speed * -1);
+
+                    // keep looping while we are still active, and BOTH motors are running.
+                    while (opModeIsActive() &&
+                            (driveFrontLeft.isBusy() && driveFrontRight.isBusy() && driveBackLeft.isBusy() && driveBackRight.isBusy())) {
+
+                        // adjust relative speed based on heading error.
+                        error = getError(angle);
+                        steer = getSteer(error, P_DRIVE_COEFF);
+
+                        leftSpeed = speed + steer;
+                        rightSpeed = -1 * speed - steer;
+
+                        // Normalize speeds if either one exceeds +/- 1.0;
+                        max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+                        if (max > 1.0) {
+                            leftSpeed /= max;
+                            rightSpeed /= max;
+                        }
+
+                        driveFrontLeft.setPower(rightSpeed);
+                        driveBackLeft.setPower(leftSpeed);
+                        driveFrontRight.setPower(leftSpeed);
+                        driveBackRight.setPower(rightSpeed);
+
+                        // Display drive status for the driver.
+                        telemetry.addData("Err/St", "%5.1f/%5.1f", error, steer);
+                        telemetry.addData("Target", "%7d:%7d:%7d:%7d", frontLeftTarget, frontRightTarget, backLeftTarget, backRightTarget);
+                        telemetry.addData("Actual", "%7d:%7d:%7d:%7d", driveFrontLeft.getCurrentPosition(),
+                                driveFrontRight.getCurrentPosition(), driveBackLeft.getCurrentPosition(), driveBackRight.getCurrentPosition());
+                        telemetry.addData("Speed", "%5.2f:%5.2f", leftSpeed, rightSpeed);
+                        telemetry.update();
+                    }
+                    break;
+                case "RIGHT":
+                    // Set Target and Turn On RUN_TO_POSITION
+                    driveFrontLeft.setTargetPosition(frontLeftTarget);
+                    driveFrontRight.setTargetPosition(frontRightTarget * -1);
+                    driveBackLeft.setTargetPosition(backLeftTarget * -1);
+                    driveBackRight.setTargetPosition(backRightTarget);
+
+                    driveFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    driveFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    driveBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    driveBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    // start motion.
+                    speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+                    driveFrontLeft.setPower(speed);
+                    driveFrontRight.setPower(speed * -1);
+                    driveBackLeft.setPower(speed * -1);
+                    driveBackRight.setPower(speed);
+
+                    // keep looping while we are still active, and BOTH motors are running.
+                    while (opModeIsActive() &&
+                            (driveFrontLeft.isBusy() && driveFrontRight.isBusy() && driveBackLeft.isBusy() && driveBackRight.isBusy())) {
+
+                        // adjust relative speed based on heading error.
+                        error = getError(angle);
+                        steer = getSteer(error, P_DRIVE_COEFF);
+
+                        rightSpeed = speed - steer;
+                        leftSpeed = -1 * speed + steer;
+
+                        // Normalize speeds if either one exceeds +/- 1.0;
+                        max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+                        if (max > 1.0) {
+                            leftSpeed /= max;
+                            rightSpeed /= max;
+                        }
+
+                        driveFrontLeft.setPower(leftSpeed);
+                        driveBackLeft.setPower(rightSpeed);
+                        driveFrontRight.setPower(rightSpeed);
+                        driveBackRight.setPower(leftSpeed);
+
+                        // Display drive status for the driver.
+                        telemetry.addData("Err/St", "%5.1f/%5.1f", error, steer);
+                        telemetry.addData("Target", "%7d:%7d:%7d:%7d", frontLeftTarget, frontRightTarget, backLeftTarget, backRightTarget);
+                        telemetry.addData("Actual", "%7d:%7d:%7d:%7d", driveFrontLeft.getCurrentPosition(),
+                                driveFrontRight.getCurrentPosition(), driveBackLeft.getCurrentPosition(), driveBackRight.getCurrentPosition());
+                        telemetry.addData("Speed", "%5.2f:%5.2f", leftSpeed, rightSpeed);
+                        telemetry.update();
+                    }
+                    break;
+            }
+
+            // Stop all motion;
+            driveFrontLeft.setPower(0);
+            driveFrontRight.setPower(0);
+            driveBackLeft.setPower(0);
+            driveBackRight.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            driveFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            driveFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            driveBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            driveBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
+    public void gyroTurn(double speed,
+                         double angle,
+                         String direction) {
+
+        int frontLeftTarget;
+        int frontRightTarget;
+        int backLeftTarget;
+        int backRightTarget;
+        int moveCounts;
+        double max;
+        double error;
+        double steer;
+        double leftSpeed;
+        double rightSpeed;
+        double tune;
+        tune = 1.22;
+
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+            switch (direction) {
+                case "C":
+                    driveFrontLeft.setPower(speed*-1);
+
+                    break;
+                case "RIGHT":
+                    // Set Target and Turn On RUN_TO_POSITION
+                    driveFrontLeft.setTargetPosition(frontLeftTarget);
+                    driveFrontRight.setTargetPosition(frontRightTarget * -1);
+                    driveBackLeft.setTargetPosition(backLeftTarget * -1);
+                    driveBackRight.setTargetPosition(backRightTarget);
+
+                    driveFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    driveFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    driveBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    driveBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    // start motion.
+                    speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+                    driveFrontLeft.setPower(speed);
+                    driveFrontRight.setPower(speed * -1);
+                    driveBackLeft.setPower(speed * -1);
+                    driveBackRight.setPower(speed);
+
+                    // keep looping while we are still active, and BOTH motors are running.
+                    while (opModeIsActive() &&
+                            (driveFrontLeft.isBusy() && driveFrontRight.isBusy() && driveBackLeft.isBusy() && driveBackRight.isBusy())) {
+
+                        // adjust relative speed based on heading error.
+                        error = getError(angle);
+                        steer = getSteer(error, P_DRIVE_COEFF);
+
+                        rightSpeed = speed - steer;
+                        leftSpeed = -1 * speed + steer;
+
+                        // Normalize speeds if either one exceeds +/- 1.0;
+                        max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+                        if (max > 1.0) {
+                            leftSpeed /= max;
+                            rightSpeed /= max;
+                        }
+
+                        driveFrontLeft.setPower(leftSpeed);
+                        driveBackLeft.setPower(rightSpeed);
+                        driveFrontRight.setPower(rightSpeed);
+                        driveBackRight.setPower(leftSpeed);
+
+                        // Display drive status for the driver.
+                        telemetry.addData("Err/St", "%5.1f/%5.1f", error, steer);
+                        telemetry.addData("Target", "%7d:%7d:%7d:%7d", frontLeftTarget, frontRightTarget, backLeftTarget, backRightTarget);
+                        telemetry.addData("Actual", "%7d:%7d:%7d:%7d", driveFrontLeft.getCurrentPosition(),
+                                driveFrontRight.getCurrentPosition(), driveBackLeft.getCurrentPosition(), driveBackRight.getCurrentPosition());
+                        telemetry.addData("Speed", "%5.2f:%5.2f", leftSpeed, rightSpeed);
+                        telemetry.update();
+                    }
+                    break;
+            }
+        }
+
+        // Stop all motion;
+        driveFrontLeft.setPower(0);
+        driveFrontRight.setPower(0);
+        driveBackLeft.setPower(0);
+        driveBackRight.setPower(0);
+
+        // Turn off RUN_TO_POSITION
+        driveFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        driveFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        driveBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        driveBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+
+
+    private double getIntegratedHeading() {
+        double currentHeading = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
+        double deltaHeading = currentHeading - previousHeading;
+
+        if (deltaHeading < -180) {
+            deltaHeading += 360;
+        } else if (deltaHeading >= 180) {
+            deltaHeading -= 360;
+        }
+
+        integratedHeading += deltaHeading;
+        previousHeading = currentHeading;
+
+        return integratedHeading;
     }
 }

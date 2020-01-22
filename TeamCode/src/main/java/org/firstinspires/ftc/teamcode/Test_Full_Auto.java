@@ -49,6 +49,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 @Autonomous(name = "RESET")
+@Disabled
 public class Test_Full_Auto extends LinearOpMode {
     public DcMotor driveFrontLeft;
     public DcMotor driveFrontRight;

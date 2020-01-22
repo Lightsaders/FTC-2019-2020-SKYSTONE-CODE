@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-@Autonomous(name = "SMART_AUTO_RED")// TODO as of right now this only grabs one block however I dont think its unreasonable to grab both Skystones provided the robot can physically grab them
-public class Smart_Auto_Red extends Auto_Methods {
+@Autonomous(name = "RED_1_Block")
+@Disabled
+public class RED_1_Block extends Auto_Methods {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -22,71 +24,48 @@ public class Smart_Auto_Red extends Auto_Methods {
             switch (positionSkystone) {
                 case "WALL":
                     if (!isStopRequested() && opModeIsActive()) {
-                        straightDriveEncoder(.2, -9, 0);
-                        strafeDriveEncoder(1, 15, "LEFT");
+                        straightDriveEncoder(.2, -9, 1.5);
+                        strafeDriveEncoder(1, 15, "LEFT",3);
                         actuator.setPower(1);//TODO use method created
                         sleep(400);
                         actuator.setPower(0);
                         clamp("CLOSE", 250);
                         straightDriveEncoder(0.2, -30, 1);
-                        turnEncoder(.4, 95, "C");
+                        turnEncoder(.4, 95, "C",3);
                         straightDriveEncoder(0.6, 200, 1);
                         clamp("OPEN", 250);
                         straightDriveEncoder(.5, -65, 1);
-//                        turnEncoder(.4,95,"CC");
-//                        straightDriveEncoder(0.2, 30, 1.5);
-//                        straightDriveEncoder(0.2, 106, 3);
-//                        strafeDriveEncoder(1,15,"LEFT");
-//                        actuator.setPower(1);
-//                        sleep(300);
-//                        actuator.setPower(0);
-//                        clamp("CLOSE");
-//                        straightDriveEncoder(0.2, -30, 1);
-//                        turnEncoder(.4,95,"C");
-//                        straightDriveEncoder(0.6, 200, 1);
-//                        clamp("OPEN");
                     }
                     break;
                 case "MIDDLE":
                     if (!isStopRequested() && opModeIsActive()) {
-                        strafeDriveEncoder(1, 15, "RIGHT");
+                        strafeDriveEncoder(1, 15, "RIGHT",3);
                         actuator.setPower(1);//TODO use method created
                         sleep(300);
                         actuator.setPower(0);
                         clamp("CLOSE", 250);
                         straightDriveEncoder(0.2, -30, 1);
-                        turnEncoder(.4, 95, "C");
-                        straightDriveEncoder(0.6, 170, 0);
+                        turnEncoder(.4, 95, "C",3);
+                        straightDriveEncoder(0.6, 170, 1.5);
                         clamp("OPEN", 250);
                         straightDriveEncoder(.5, -65, 1);
                     }
                     break;
                 case "BRIDGE":
                     if (!isStopRequested() && opModeIsActive()) {
-                        strafeDriveEncoder(1, 35, "RIGHT");
+                        strafeDriveEncoder(1, 35, "RIGHT",3);
                         actuator.setPower(1);//TODO use method created
                         sleep(300);
                         actuator.setPower(0);
                         clamp("CLOSE", 250);
                         straightDriveEncoder(0.2, -30, 1.5);
-                        turnEncoder(.4, 95, "C");
+                        turnEncoder(.4, 95, "C",3);
                         straightDriveEncoder(0.2, 150, 3);
                         clamp("OPEN", 250);
-                        straightDriveEncoder(.5, -40, 0);
+                        straightDriveEncoder(.5, -40, 1);
                     }
                     break;
             }
-//            liftleft.setPower(-1);
-//            liftleft.setPower(-1);
-//            sleep(700);
-//            liftleft.setPower(-0.16);
-//            liftleft.setPower(-0.16);
-//            strafeDriveEncoder(.5,50,"LEFT");
-//            straightDriveEncoder(.3,20,0);
-
-
-            // DELIVER SKYSTONE TO BUILDZONE
-            // ETC
         }
     }
 }
