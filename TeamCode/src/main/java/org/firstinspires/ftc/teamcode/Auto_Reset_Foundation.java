@@ -1,16 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Autonomous(name = "AUTO_RESET_FOUNDATION")
-public class Auto_Reset_Foundatio extends Auto_Methods {
+public class Auto_Reset_Foundation extends Auto_Methods {
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         // init robot
-        initialize();
+        initCompBot();
         waitForStart();
 
         if (opModeIsActive() && !isStopRequested()) {

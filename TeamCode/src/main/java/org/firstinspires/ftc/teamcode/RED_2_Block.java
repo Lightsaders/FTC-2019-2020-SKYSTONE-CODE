@@ -9,7 +9,7 @@ public class RED_2_Block extends Auto_Methods {
     public void runOpMode() throws InterruptedException {
 
         // init robot
-        initialize();
+        initCompBot();
         waitForStart();
 
         if (opModeIsActive() && !isStopRequested()) {

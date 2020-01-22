@@ -1,17 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "TeleOp_Rylan", group = "TeleOp")
-
 public class TeleOp_Rylan extends LinearOpMode {
 
     private DcMotor driveFrontLeft;
@@ -28,7 +24,6 @@ public class TeleOp_Rylan extends LinearOpMode {
     public Servo rightFoundation;
     public Servo leftFoundation;
     double toggle;
-    boolean toggler;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -64,14 +59,14 @@ public class TeleOp_Rylan extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            //Gamepad 1 left joystick x strafe
+            //Gamepad 1 drive controls SLOW MO
             while ((Math.abs(gamepad1.left_stick_x) > 0.1 || Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.right_stick_x) > 0.1) && gamepad1.left_bumper && opModeIsActive()) {
                 driveBackLeft.setPower(gamepad1.left_stick_y * 0.3 + gamepad1.left_stick_x * 0.3 + gamepad1.right_stick_x * -0.3);
                 driveFrontLeft.setPower(gamepad1.left_stick_y * 0.3 + gamepad1.left_stick_x * -0.3 + gamepad1.right_stick_x * -0.3);
                 driveFrontRight.setPower(gamepad1.left_stick_y * 0.3 + gamepad1.left_stick_x * 0.3 + gamepad1.right_stick_x * 0.3);
                 driveBackRight.setPower(gamepad1.left_stick_y * 0.3 + gamepad1.left_stick_x * -0.3 + gamepad1.right_stick_x * 0.3);
             }
-            //Gamepad 1 left joystick x strafe
+            //Gamepad 1 drive controls NORMAL
             while ((Math.abs(gamepad1.left_stick_x) > 0.1 || Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.right_stick_x) > 0.1) && !gamepad1.left_bumper && opModeIsActive()) {
                 driveBackLeft.setPower(gamepad1.left_stick_y * 0.6 + gamepad1.left_stick_x * 0.6 + gamepad1.right_stick_x * -0.6);
                 driveFrontLeft.setPower(gamepad1.left_stick_y * 0.6 + gamepad1.left_stick_x * -0.6 + gamepad1.right_stick_x * -0.6);
