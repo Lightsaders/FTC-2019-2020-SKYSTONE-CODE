@@ -594,7 +594,7 @@ public abstract class Auto_Methods extends LinearOpMode {
             //Turn off run to position
             actuator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-    }// TODO get measurement
+    }// TODO get measurements
 
     public void liftDistance(int distanceCM, double speed) {
         int leftLiftTarget;
