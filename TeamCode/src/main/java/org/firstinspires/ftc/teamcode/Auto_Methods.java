@@ -155,6 +155,7 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     /**
      * Method to find skystone postition based off of color sensors
+     *
      * @param color color for match play either (RED or BLUE)
      */
     public void skystoneColorScan(String color) {
@@ -258,7 +259,8 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     /**
      * Method to drive straight based purely off of encoders
-     * @param speed how fast robot drives (0 - 1)
+     *
+     * @param speed      how fast robot drives (0 - 1)
      * @param distanceCM how far robot drives in CM (+= FORWARD / -= BACKWARDS)
      * @param timeCutOff method will stop driving after this amount of time
      */
@@ -344,9 +346,10 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     /**
      * Method to drive horizontally based purely off of encoders
-     * @param speed how fast robot drives (0 - 1)
+     *
+     * @param speed      how fast robot drives (0 - 1)
      * @param distanceCM how far robot drives in CM (+= FORWARD / -= BACKWARDS)
-     * @param direction either LEFT or RIGHT
+     * @param direction  either LEFT or RIGHT
      * @param timeCutOff method will stop driving after this amount of time
      */
     // TODO replace this method with gyroStrafe once it works
@@ -458,10 +461,11 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     /**
      * Method to turn based purely off of encoders
-     * @param speed how fast robot drives (0 - 1)
+     *
+     * @param speed       how fast robot drives (0 - 1)
      * @param turnDegrees how far robot turns in degrees (ALWAYS POSITIVE)
-     * @param direction either LEFT or RIGHT
-     * @param timeCutOff method will stop driving after this amount of time
+     * @param direction   either LEFT or RIGHT
+     * @param timeCutOff  method will stop driving after this amount of time
      */
     public void turnEncoder(double speed, double turnDegrees, String direction, double timeCutOff) {
         double tuning = 1.46;
@@ -558,13 +562,14 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     /**
      * Method to drive on a fixed compass bearing (angle), based on encoder counts
-     * @param speed    Target speed for forward motion
-     * @param distance distance in centimenters to move from current position (+= FORWARD / -= BACKWARDS)
-     * @param angle    angle to follow 0 being forward
+     *
+     * @param speed      Target speed for forward motion
+     * @param distance   distance in centimenters to move from current position (+= FORWARD / -= BACKWARDS)
+     * @param angle      angle to follow 0 being forward
      * @param timeCutOff method will stop driving after this amount of time
      */
     // TODO add timer cut off
-    public void gyroDrive(double speed,double distance,double angle, int timeCutOff) {
+    public void gyroDrive(double speed, double distance, double angle, int timeCutOff) {
         int frontLeftTarget;
         int frontRightTarget;
         int backLeftTarget;
@@ -616,7 +621,7 @@ public abstract class Auto_Methods extends LinearOpMode {
 
             while (opModeIsActive() &&
                     ((getRuntime() <= end) ||
-                    (driveFrontLeft.isBusy() && driveFrontRight.isBusy() && driveBackLeft.isBusy() && driveBackRight.isBusy()))) {
+                            (driveFrontLeft.isBusy() && driveFrontRight.isBusy() && driveBackLeft.isBusy() && driveBackRight.isBusy()))) {
 
                 // adjust relative speed based on heading error.
                 error = getError(angle);
@@ -662,13 +667,14 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     /**
      * Method to strafe on a fixed compass bearing (angle), based on encoder counts
-     * @param speed    Target speed for motion
-     * @param distance distance in centimenters to move from current position (+= FORWARD / -= BACKWARDS)
-     * @param angle    angle to follow 0 being forward
-     * @param direction either LEFT or RIGHT
+     *
+     * @param speed      Target speed for motion
+     * @param distance   distance in centimenters to move from current position (+= FORWARD / -= BACKWARDS)
+     * @param angle      angle to follow 0 being forward
+     * @param direction  either LEFT or RIGHT
      * @param timeCutOff method will stop driving after this amount of time
      */
-    public void gyroStrafe(double speed,double distance,double angle,String direction,int timeCutOff) {
+    public void gyroStrafe(double speed, double distance, double angle, String direction, int timeCutOff) {
         int frontLeftTarget;
         int frontRightTarget;
         int backLeftTarget;
@@ -679,7 +685,7 @@ public abstract class Auto_Methods extends LinearOpMode {
         double steer;
         double leftSpeed;
         double rightSpeed;
-        double tune= 1.22;
+        double tune = 1.22;
         double end = 0;
         double t = 0;
 
@@ -826,13 +832,14 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     /**
      * Method to strafe on a fixed compass bearing (angle), based on encoder counts
-     * @param speed    Target speed for motion
-     * @param angle    angle to turn to
-     * @param direction either C or CC
+     *
+     * @param speed      Target speed for motion
+     * @param angle      angle to turn to
+     * @param direction  either C or CC
      * @param timeCutOff method will stop driving after this amount of time
      */
     // TODO actually write the method for this then replace encoder turn with this
-    public void gyroTurn(double speed,double angle,String direction,int timeCutOff) {
+    public void gyroTurn(double speed, double angle, String direction, int timeCutOff) {
         double end = 0;
         double t = 0;
 
@@ -888,8 +895,9 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     /**
      * Method to set clamp servo position
+     *
      * @param position either (OPEN or CLOSED)
-     * @param sleep how much time allocated to move the servo
+     * @param sleep    how much time allocated to move the servo
      */
     public void clamp(String position, int sleep) {
         switch (position) {
@@ -905,8 +913,9 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     /**
      * Method to set foundation clamp servo position
+     *
      * @param position either (DOWN or UP)
-     * @param sleep how much time allocated to move the servo
+     * @param sleep    how much time allocated to move the servo
      */
     // TODO implement in code only if it works
     public void foundationClamps(String position, int sleep) {
@@ -925,8 +934,9 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     /**
      * Method to set turn clamp servo position
+     *
      * @param position either (PERP or PAR)
-     * @param sleep how much time allocated to move the servo
+     * @param sleep    how much time allocated to move the servo
      */
     public void turnClamp(String position, int sleep) {
         switch (position) {
@@ -942,8 +952,9 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     /**
      * Method to move actuator to desired position
+     *
      * @param distanceCM distance that actuator will move (+= FORWARD / -= BACKWARDS)
-     * @param speed how fast actuator will move
+     * @param speed      how fast actuator will move
      */
     // TODO get measurements and implement
     public void actuatorDistance(int distanceCM, double speed) {
@@ -995,8 +1006,9 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     /**
      * Method to move lift to desired position
+     *
      * @param distanceCM distance that lift will move (+= FORWARD / -= BACKWARDS)
-     * @param speed how fast actuator will move
+     * @param speed      how fast actuator will move
      */
     // TODO odometry pulley and implement
     public void liftDistance(int distanceCM, double speed) {
@@ -1063,7 +1075,8 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     /**
      * Method to get error for gyro methods
-     * @param targetAngle    Find error between desired heading from gyro methods and current heading
+     *
+     * @param targetAngle Find error between desired heading from gyro methods and current heading
      */
     public double getError(double targetAngle) {
 
@@ -1078,7 +1091,8 @@ public abstract class Auto_Methods extends LinearOpMode {
 
     /**
      * Method to get Steering speed for gyro methods
-     * @param error    how far off the robot is from desired heading
+     *
+     * @param error how far off the robot is from desired heading
      * @param correctionCoeff the correction coeffecient
      */
     public double getSteer(double error, double correctionCoeff) {
@@ -1088,7 +1102,7 @@ public abstract class Auto_Methods extends LinearOpMode {
     /**
      * Method to get current heading
      */
-    Double getHeading() {
+    public Double getHeading() {
         double heading = 0;
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         heading = AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));
@@ -1098,7 +1112,7 @@ public abstract class Auto_Methods extends LinearOpMode {
     /**
      * Method to get heading so that it adds or subracts from current heading based on direction
      */
-    private double getIntegratedHeading() {
+    public double getIntegratedHeading() {
         double currentHeading = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
         double deltaHeading = currentHeading - previousHeading;
 
@@ -1112,5 +1126,14 @@ public abstract class Auto_Methods extends LinearOpMode {
         previousHeading = currentHeading;
 
         return integratedHeading;
+    }
+
+    /**
+     * Gets the orientation of the robot using the REV IMU
+     *
+     * @return the angle of the robot
+     */
+    public double getZAngle() {
+        return (-imu.getAngularOrientation().firstAngle);
     }
 }
