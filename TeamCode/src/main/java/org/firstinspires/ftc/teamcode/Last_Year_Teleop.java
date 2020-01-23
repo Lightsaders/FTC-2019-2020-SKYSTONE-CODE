@@ -68,10 +68,10 @@ public class Last_Year_Teleop extends LinearOpMode {
             //TODO make it not have to be held
 //
 
-                driveBackLeft.setPower(gamepad1.left_stick_y * toggle + gamepad1.left_stick_x * toggle);
-                driveFrontLeft.setPower(gamepad1.left_stick_y * toggle + gamepad1.left_stick_x * -toggle);
-                driveFrontRight.setPower(gamepad1.left_stick_y * toggle + gamepad1.left_stick_x * toggle);
-                driveBackRight.setPower(gamepad1.left_stick_y * toggle + gamepad1.left_stick_x * -toggle);
+                driveBackLeft.setPower(gamepad1.left_stick_y * -toggle + gamepad1.left_stick_x * toggle);
+                driveFrontLeft.setPower(gamepad1.left_stick_y * toggle + gamepad1.left_stick_x * toggle);
+                driveFrontRight.setPower(gamepad1.left_stick_y * -toggle + gamepad1.left_stick_x * toggle);
+                driveBackRight.setPower(gamepad1.left_stick_y * toggle + gamepad1.left_stick_x * toggle);
                 // RIGHT STICK X - TURN CLOCKWISE AND COUNTERCLOCKWISE
                 driveFrontLeft.setPower(gamepad1.right_stick_x * -toggle);
                 driveBackLeft.setPower(gamepad1.right_stick_x * -toggle);

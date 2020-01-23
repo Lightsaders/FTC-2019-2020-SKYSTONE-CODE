@@ -14,10 +14,10 @@ public class Auto_Reset_Foundation extends Auto_Methods {
 
         if (opModeIsActive() && !isStopRequested()) {
             actuator.setPower(-1);//TODO use method created however it requires encoders on actuator
-            sleep(100);
+            sleep(300);
             actuator.setPower(0);
-            turnClamp("PERP", 700);
-            clamp("CLOSE",500);
+
+
         }
     }
 }

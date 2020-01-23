@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "TeleOp_Rylan", group = "TeleOp")
+
 public class TeleOp_Rylan extends LinearOpMode {
 
     private DcMotor driveFrontLeft;
@@ -16,6 +20,7 @@ public class TeleOp_Rylan extends LinearOpMode {
     private DcMotor driveBackRight;
     private Servo rotation;
     private Servo clamp;
+    private Servo teamMarker;
 
     private DcMotor liftleft;
     private DcMotor liftright;
@@ -24,6 +29,7 @@ public class TeleOp_Rylan extends LinearOpMode {
     public Servo rightFoundation;
     public Servo leftFoundation;
     double toggle;
+    boolean toggler;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -35,6 +41,7 @@ public class TeleOp_Rylan extends LinearOpMode {
         rotation = hardwareMap.servo.get("rotation");
         actuator = hardwareMap.dcMotor.get("actuator");
         clamp = hardwareMap.servo.get("clamp");
+        teamMarker = hardwareMap.servo.get("teamMarker");
         liftright = hardwareMap.dcMotor.get("liftright");
         liftleft = hardwareMap.dcMotor.get("liftleft");
 
@@ -59,14 +66,14 @@ public class TeleOp_Rylan extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            //Gamepad 1 drive controls SLOW MO
+            //Gamepad 1 left joystick x strafe
             while ((Math.abs(gamepad1.left_stick_x) > 0.1 || Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.right_stick_x) > 0.1) && gamepad1.left_bumper && opModeIsActive()) {
                 driveBackLeft.setPower(gamepad1.left_stick_y * 0.3 + gamepad1.left_stick_x * 0.3 + gamepad1.right_stick_x * -0.3);
                 driveFrontLeft.setPower(gamepad1.left_stick_y * 0.3 + gamepad1.left_stick_x * -0.3 + gamepad1.right_stick_x * -0.3);
                 driveFrontRight.setPower(gamepad1.left_stick_y * 0.3 + gamepad1.left_stick_x * 0.3 + gamepad1.right_stick_x * 0.3);
                 driveBackRight.setPower(gamepad1.left_stick_y * 0.3 + gamepad1.left_stick_x * -0.3 + gamepad1.right_stick_x * 0.3);
             }
-            //Gamepad 1 drive controls NORMAL
+            //Gamepad 1 left joystick x strafe
             while ((Math.abs(gamepad1.left_stick_x) > 0.1 || Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.right_stick_x) > 0.1) && !gamepad1.left_bumper && opModeIsActive()) {
                 driveBackLeft.setPower(gamepad1.left_stick_y * 0.6 + gamepad1.left_stick_x * 0.6 + gamepad1.right_stick_x * -0.6);
                 driveFrontLeft.setPower(gamepad1.left_stick_y * 0.6 + gamepad1.left_stick_x * -0.6 + gamepad1.right_stick_x * -0.6);
@@ -80,20 +87,20 @@ public class TeleOp_Rylan extends LinearOpMode {
             driveBackRight.setPower(0);
 
             if (gamepad2.right_bumper && opModeIsActive()) {
-                clamp.setPosition(.25);
+                clamp.setPosition(.35);
             }
             if (gamepad2.left_bumper && opModeIsActive()) {
-                clamp.setPosition(1);
+                clamp.setPosition(.75);
             }
 
             actuator.setPower(gamepad2.right_trigger);
             actuator.setPower(gamepad2.left_trigger * -1);
 
             if (gamepad2.dpad_left && opModeIsActive()) {
-                rotation.setPosition(.98);
+                rotation.setPosition(.94);
             }
             if (gamepad2.dpad_right && opModeIsActive()) {
-                rotation.setPosition(.64);
+                rotation.setPosition(.61);
             }
 
 
@@ -124,6 +131,18 @@ public class TeleOp_Rylan extends LinearOpMode {
             } else {
                 leftFoundation.setPosition(0.2);
                 rightFoundation.setPosition(.9);
+            }
+            if (gamepad1.a && opModeIsActive()) {
+                teamMarker.setPosition(1);
+
+            } else {
+                teamMarker.setPosition(0.5);
+            }
+            if (gamepad2.y){
+                gamepad1.left_stick_y=0;
+                gamepad1.right_stick_y=0;
+                gamepad1.left_stick_x=0;
+                gamepad1.right_stick_y=0;
             }
             idle();
         }
