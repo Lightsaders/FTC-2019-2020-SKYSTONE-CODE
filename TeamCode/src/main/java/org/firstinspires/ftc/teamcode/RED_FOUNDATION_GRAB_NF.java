@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "RED_FOUNDATION_GRAB")
-public class RED_Foundation_Grab extends Auto_Methods {
+@Autonomous(name = "RED_FOUNDATION_GRAB_NF")
+public class RED_FOUNDATION_GRAB_NF extends Auto_Methods {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -13,7 +13,7 @@ public class RED_Foundation_Grab extends Auto_Methods {
         waitForStart();
 
         if (opModeIsActive() && !isStopRequested()) {
-            gyroStrafe(0.3, 39, 0, "RIGHT",1);
+            straightDriveEncoder(0.3, 39, 1);
             rightFoundation.setPosition(.4);
             sleep(1000);
             actuator.setPower(1);//TODO use method created however it requires encoders on actuator
@@ -35,9 +35,11 @@ public class RED_Foundation_Grab extends Auto_Methods {
             leftFoundation.setPosition(0.2);
             rightFoundation.setPosition(.9);
             sleep(1500);
-            strafeDriveEncoder(.5,100,"LEFT",4);
-            straightDriveEncoder(.3,-15,1);
+            strafeDriveEncoder(.5,50,"LEFT",2);
             clamp("CLOSE", 700);
+            strafeDriveEncoder(.5,50,"LEFT",2);
+            straightDriveEncoder(.3,-15,1);
+
         }
     }
 }

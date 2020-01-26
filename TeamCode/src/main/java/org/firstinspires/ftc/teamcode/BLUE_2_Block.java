@@ -41,9 +41,9 @@ public class BLUE_2_Block extends Auto_Methods {
                         turnEncoder(0.5, 76, "CC", 1);
                         straightDriveEncoder(0.7, 190, 1.75);
                         clamp("OPEN", 250);
-                        straightDriveEncoder(0.7, -217, 2);
+                        straightDriveEncoder(0.7, -207, 2);
                         turnEncoder(0.5, 72, "C", 1.75);
-                        straightDriveEncoder(0.5, 40,  2);
+                        straightDriveEncoder(0.5, 20,  2);
                         //turnEncoder(0.5,25,"CC",0.75);
                         turnClamp("PAR", 250);
                         clamp("CLOSE", 250);
@@ -66,7 +66,7 @@ public class BLUE_2_Block extends Auto_Methods {
                         turnEncoder(0.5, 78, "CC", 1);
                         straightDriveEncoder(0.7, 160, 2.25);
                         clamp("OPEN", 250);
-                        straightDriveEncoder(0.7, -235, 2.5);
+                        straightDriveEncoder(0.6, -235, 2.5);
                         turnEncoder(0.5, 76, "C", 1);
                         clamp("OPEN", 250);
                         straightDriveEncoder(0.4, 18, 1.75);
@@ -76,7 +76,7 @@ public class BLUE_2_Block extends Auto_Methods {
                         straightDriveEncoder(0.7, 220, 2.25);
                         straightDriveEncoder(.7, 18, 1.5);
                         clamp("OPEN", 250);
-                        straightDriveEncoder(.7, -45, 1.5);
+                        straightDriveEncoder(.7, -40, 1.5);
                     }
                     break;
                 case "BRIDGE":

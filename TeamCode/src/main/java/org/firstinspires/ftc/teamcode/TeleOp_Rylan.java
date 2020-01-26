@@ -10,6 +10,20 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SampleRevBlinkinLedDriver;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.internal.system.Deadline;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.internal.system.Deadline;
+
+import java.util.concurrent.TimeUnit;
+
+
 @TeleOp(name = "TeleOp_Rylan", group = "TeleOp")
 
 public class TeleOp_Rylan extends LinearOpMode {
@@ -30,9 +44,17 @@ public class TeleOp_Rylan extends LinearOpMode {
     public Servo leftFoundation;
     double toggle;
     boolean toggler;
+//    RevBlinkinLedDriver blinkinLedDriver;
+//    RevBlinkinLedDriver.BlinkinPattern pattern;
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+
+//        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
+//        pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
+//        blinkinLedDriver.setPattern(pattern);
+
 
         driveFrontLeft = hardwareMap.dcMotor.get("driveFrontLeft");
         driveFrontRight = hardwareMap.dcMotor.get("driveFrontRight");
@@ -62,6 +84,10 @@ public class TeleOp_Rylan extends LinearOpMode {
         while (!opModeIsActive() && !isStopRequested()) {
             telemetry.addData("status", "waiting for start command...");
             telemetry.update();
+
+
+
+
         }
 
         while (opModeIsActive()) {
@@ -119,6 +145,7 @@ public class TeleOp_Rylan extends LinearOpMode {
                 liftleft.setPower(0);
                 telemetry.addLine("LIMIT SWITCH PRESSED");
                 telemetry.update();
+//                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
             } else if (gamepad2.left_stick_y == 0 && opModeIsActive() && limitSwitch.getState()) {
                 liftright.setPower(-0.18);
                 liftleft.setPower(-0.18);
@@ -138,12 +165,21 @@ public class TeleOp_Rylan extends LinearOpMode {
             } else {
                 teamMarker.setPosition(0.5);
             }
-            if (gamepad2.y){
-                gamepad1.left_stick_y=0;
-                gamepad1.right_stick_y=0;
-                gamepad1.left_stick_x=0;
-                gamepad1.right_stick_y=0;
+            if (gamepad2.y) {
+                gamepad1.left_stick_y = 0;
+                gamepad1.right_stick_y = 0;
+                gamepad1.left_stick_x = 0;
+                gamepad1.right_stick_y = 0;
             }
+
+//                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+//                sleep(60000);
+//                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+//                sleep(15000);
+//            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE);
+//            sleep(15000);
+//            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+//            sleep(30000);
             idle();
         }
     }
