@@ -35,9 +35,10 @@ public class RED_Foundation_Grab extends Auto_Methods {
             leftFoundation.setPosition(0.2);
             rightFoundation.setPosition(.9);
             sleep(1500);
-            strafeDriveEncoder(.5,100,"LEFT",4);
+            strafeDriveEncoder(.5,30,"LEFT",2);
             straightDriveEncoder(.3,-15,1);
             clamp("CLOSE", 700);
+            strafeDriveEncoder(.5,70,"LEFT",3);
         }
     }
 }

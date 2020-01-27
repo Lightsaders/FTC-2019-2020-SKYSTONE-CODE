@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+@Disabled
 @Autonomous(name = "RED_FOUNDATION_GRAB_NF")
 public class RED_FOUNDATION_GRAB_NF extends Auto_Methods {
 
