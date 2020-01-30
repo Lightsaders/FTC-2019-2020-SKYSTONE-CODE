@@ -136,8 +136,8 @@ public class TeleOp_Rylan extends LinearOpMode {
                 telemetry.addLine("DOWN");
                 telemetry.update();
             } else if (gamepad2.left_stick_y > 0 && opModeIsActive()) {
-                liftleft.setPower(gamepad2.left_stick_y * -0.65);
-                liftright.setPower(gamepad2.left_stick_y * -0.65);
+                liftleft.setPower(gamepad2.left_stick_y * -0.85);
+                liftright.setPower(gamepad2.left_stick_y * -0.85);
                 telemetry.addLine("UP");
                 telemetry.update();
             } else if (gamepad2.left_stick_y == 0 && opModeIsActive() && !limitSwitch.getState()) {

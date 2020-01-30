@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "RED_FOUNDATION_GRAB")
-public class RED_Foundation_Grab extends Auto_Methods {
+@Autonomous(name = "BLUE_FOUNDATION_GRAB_TURN")
+public class BLUE_FOUNDATION_GRAB_NF extends Auto_Methods {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -13,7 +13,7 @@ public class RED_Foundation_Grab extends Auto_Methods {
         waitForStart();
 
         if (opModeIsActive() && !isStopRequested()) {
-            strafeDriveEncoder(0.3, 29,  "RIGHT",2);
+            strafeDriveEncoder(0.3, 10,  "LEFT",2);
             rightFoundation.setPosition(.4);
             sleep(1000);
             actuator.setPower(1);//TODO use method created however it requires encoders on actuator
@@ -31,18 +31,19 @@ public class RED_Foundation_Grab extends Auto_Methods {
             leftFoundation.setPosition(1);
             rightFoundation.setPosition(0.1);
             sleep(1600);
+            turnEncoder(0.6,55,"CC", 2);
+            straightDriveEncoder(0.6,-30,2);
             leftFoundation.setPosition(1);
             rightFoundation.setPosition(0.1);
-            straightDriveEncoder(.4,-100,3);
+            turnEncoder(0.6,75,"CC",2);
+            straightDriveEncoder(.5,80,3);
             leftFoundation.setPosition(0.2);
             rightFoundation.setPosition(.9);
             sleep(1500);
-            leftFoundation.setPosition(0.2);
-            rightFoundation.setPosition(.9);
-            strafeDriveEncoder(.5,60,"LEFT",2);
-            straightDriveEncoder(.3,-15,1);
+            strafeDriveEncoder(.5,50,"LEFT",2);
+            straightDriveEncoder(.5,-140,2);
             clamp("CLOSE", 700);
-            strafeDriveEncoder(.5,40,"LEFT",3);
+
         }
     }
 }
