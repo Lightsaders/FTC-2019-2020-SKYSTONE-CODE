@@ -24,6 +24,7 @@ public class BLUE_2_Block extends Auto_Methods {
             clamp.setPosition(.8);
             rightFoundation.setPosition(.9);
             sleep(1000);
+            turnClamp("PAR", 700);
             straightDriveEncoder(0.2, 90, 2.5);
             skystoneColorScan("BLUE");
             telemetry.addLine("Skystone position: " + positionSkystone);
@@ -76,13 +77,13 @@ public class BLUE_2_Block extends Auto_Methods {
                         straightDriveEncoder(0.7, 220, 2.25);
                         straightDriveEncoder(.7, 18, 1.5);
                         clamp("OPEN", 250);
-                        straightDriveEncoder(.7, -40, 1.5);
+                        straightDriveEncoder(.7, -45, 1.5);
                     }
                     break;
                 case "BRIDGE":
                     if (!isStopRequested() && opModeIsActive()) {
                         straightDriveEncoder(0.2, -9, 0.75);
-                        strafeDriveEncoder(0.4, 25, "LEFT", .75);
+                        strafeDriveEncoder(0.4, 34, "LEFT", .75);
                         actuator.setPower(1);//TODO use method created
                         sleep(500);
                         actuator.setPower(0);
@@ -98,9 +99,9 @@ public class BLUE_2_Block extends Auto_Methods {
                         clamp("CLOSE", 250);
                         straightDriveEncoder(.5, -55, 1);
                         turnEncoder(0.5, 85, "CC", 1);
-                        straightDriveEncoder(0.7, 220, 2);
+                        straightDriveEncoder(0.7, 215, 2);
                         clamp("OPEN", 250);
-                        straightDriveEncoder(0.4, -45, 1.75);
+                        straightDriveEncoder(0.4, -50, 1.75);
                     }
                     break;
             }

@@ -123,10 +123,10 @@ public class TeleOp_Rylan extends LinearOpMode {
             actuator.setPower(gamepad2.left_trigger * -1);
 
             if (gamepad2.dpad_left && opModeIsActive()) {
-                rotation.setPosition(.94);
+                rotation.setPosition(.90);
             }
             if (gamepad2.dpad_right && opModeIsActive()) {
-                rotation.setPosition(.61);
+                rotation.setPosition(.54);
             }
 
 

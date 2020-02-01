@@ -71,14 +71,14 @@ public class RED_2_Block extends Auto_Methods {
                         straightDriveEncoder(0.7, -235, 2.5);
                         turnEncoder(0.5, 76, "CC", 1);
                         clamp("OPEN", 250);
-                        straightDriveEncoder(0.4, 18, 1.75);
+                        straightDriveEncoder(0.4, 40, 1.75);
                         clamp("CLOSE", 250);
-                        straightDriveEncoder(0.6, -20, 0.75);
+                        straightDriveEncoder(0.6, -38, 0.75);
                         turnEncoder(0.5, 75, "C", 1.5);
                         straightDriveEncoder(0.7, 220, 2.25);
-                        straightDriveEncoder(.7, 18, 1.5);
+
                         clamp("OPEN", 250);
-                        straightDriveEncoder(.7, -45, 1.5);
+                        straightDriveEncoder(.7, -50, 1.5);
                     }
                     break;
                 case "BRIDGE":
@@ -102,7 +102,7 @@ public class RED_2_Block extends Auto_Methods {
                         turnEncoder(0.5, 85, "C", 1);
                         straightDriveEncoder(0.7, 220, 2);
                         clamp("OPEN", 250);
-                        straightDriveEncoder(0.4, -45, 1.75);
+                        straightDriveEncoder(0.4, -80, 1.75);
                     }
                     break;
             }

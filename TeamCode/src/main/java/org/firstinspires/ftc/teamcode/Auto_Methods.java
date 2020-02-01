@@ -941,10 +941,10 @@ public abstract class Auto_Methods extends LinearOpMode {
     public void turnClamp(String position, int sleep) {
         switch (position) {
             case "PERP":
-                rotation.setPosition(.64);
+                rotation.setPosition(.54);
                 break;
             case "PAR":
-                rotation.setPosition(.96);
+                rotation.setPosition(.9);
                 break;
         }
         sleep(sleep);// This is to allow time for the servo to move
